@@ -71,20 +71,24 @@ The page joins them in the browser: **Dist %** and **Side** are recomputed from
 (live spot, daily 44 EMA) on every poll, so they move every minute without
 anyone refetching a candle.
 
-### Spot fetch has two paths
+### Spot fetch uses yfinance, and that was measured
 
-* **primary** `v7/finance/quote`, 100 symbols per call → ~6 calls for the universe
-* **fallback** `v8/finance/chart`, 1 symbol per call → ~500 calls, threaded
+The first version called Yahoo's JSON endpoints directly (`v7/finance/quote`
+batched with a cookie+crumb, falling back to `v8/finance/chart`). On a GitHub
+Actions runner that scored **fresh=0/500 in 7.5 seconds** — every request
+refused. Actions IP ranges are blocked at Yahoo's edge for the plain endpoints,
+and the same endpoints return HTTP 429 from a residential IP once polled.
 
-v7 needs a cookie+crumb pair and is ~80× cheaper when it works. The fallback is
-the path `nifty-heatmap-core` already proves in production. Whichever one ran is
-reported in the page header, so you can see which path you are on.
+In the same workflow on the same runners, `yf.download()` pulled 500 symbols ×
+2 years successfully. yfinance maintains the cookie/crumb session the raw calls
+could not establish. Reachability decided this, not speed.
 
 ### Staleness is reported, never hidden
 
-A symbol that fails keeps its previous price, is marked `stale`, and the page
-greys that row. The header shows `fresh/total`. A board that shows a ten-minute
--old price as if it were live is worse than one that admits it is behind.
+A symbol that fails keeps its previous price and is marked `stale`. The page
+greys those rows; the header shows `fresh/total`. A board that shows a
+ten-minute-old price as if it were live is worse than one that admits it is
+behind.
 
 ---
 
@@ -100,11 +104,19 @@ To wire it up: create a cron-job.org job hitting
 `POST https://api.github.com/repos/abhijeetbishayee-drb/nifty-ema-board/actions/workflows/refresh.yml/dispatches`
 with `{"ref":"main"}` and a fine-grained PAT with Actions: write.
 
-**Honest limit:** each run costs ~40–60s of checkout + setup + install before
-it fetches anything. On the v7 batch path a sweep finishes comfortably inside a
-minute; if Yahoo forces the v8 fallback the effective cadence stretches toward
-~90s. `cancel-in-progress: true` means a superseded run is dropped rather than
-queued, and the page's freshness counter shows the truth either way.
+**Honest limit, measured on this repo:**
+
+| stage | time |
+|---|---|
+| fetch 500 symbols (yfinance, chunks of 50) | **23s** |
+| checkout + setup-python + cached pip + commit/push | ~40s |
+| **total run** | **~63s** |
+
+So a full cycle is a little *over* a minute, not under it. At a 1-minute ping
+cadence `cancel-in-progress: true` will cancel some in-flight runs, making the
+effective refresh roughly **60–70s** rather than a clean 60. Pip caching already
+took the fetch from 32.7s to 23.0s; the remaining cost is runner startup, which
+cannot be removed. The page's freshness clock shows the truth either way.
 
 ---
 
