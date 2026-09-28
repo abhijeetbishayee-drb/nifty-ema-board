@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EMA Board — NSE 251–750</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#161a22; --panel2:#1c212b; --line:#252b37;
+    --fg:#e6e9ef; --dim:#8b94a7; --accent:#4c8dff;
+    --up:#2ebd85; --down:#f6465d; --warn:#f0b90b;
+    --x:#2ebd85; --o:#f6465d;
+  }
+  @media (prefers-color-scheme:light){
+    :root{ --bg:#f6f7f9; --panel:#fff; --panel2:#f0f2f5; --line:#dfe3ea;
+           --fg:#12151a; --dim:#5d6473; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:13px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{position:sticky;top:0;z-index:30;background:var(--panel);
+    border-bottom:1px solid var(--line);padding:10px 14px}
+  .title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  h1{font-size:15px;margin:0;font-weight:650;letter-spacing:.2px}
+  .sub{color:var(--dim);font-size:11.5px}
+  .meta{margin-left:auto;color:var(--dim);font-size:11.5px;text-align:right}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--up);margin-right:5px;vertical-align:middle}
+  .dot.warn{background:var(--warn)} .dot.bad{background:var(--down)}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:9px}
+  input,select{background:var(--panel2);color:var(--fg);border:1px solid var(--line);
+    border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;outline:none}
+  input:focus,select:focus{border-color:var(--accent)}
+  input[type=search]{min-width:190px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .seg button{background:var(--panel2);color:var(--dim);border:0;padding:5px 10px;
+    font:inherit;font-size:12px;cursor:pointer;border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:0}
+  .seg button.on{background:var(--accent);color:#fff}
+  .ghost{background:transparent;border:1px solid var(--line);color:var(--dim);
+    border-radius:6px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer}
+  .ghost:hover{color:var(--fg);border-color:var(--accent)}
+  .count{color:var(--dim);font-size:11.5px;margin-left:2px}
+
+  .wrap{overflow:auto;height:calc(100vh - 104px)}
+  table{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums}
+  th,td{padding:5px 9px;white-space:nowrap;border-bottom:1px solid var(--line)}
+  thead th{position:sticky;top:0;z-index:20;background:var(--panel2);
+    font-weight:600;font-size:11.5px;color:var(--dim);cursor:pointer;
+    text-align:right;user-select:none}
+  thead th:first-child,thead th:nth-child(2){text-align:left}
+  thead th:hover{color:var(--fg)}
+  th .ar{opacity:.45;font-size:9px;margin-left:3px}
+  td{text-align:right}
+  td.l{text-align:left}
+  tbody tr:hover{background:var(--panel2)}
+  tbody tr.stale{opacity:.45}
+  .sym{font-weight:650}
+  .sym a{color:inherit;text-decoration:none}
+  .sym a:hover{color:var(--accent)}
+  .nm{color:var(--dim);font-size:11px;max-width:200px;overflow:hidden;
+    text-overflow:ellipsis;display:inline-block;vertical-align:bottom}
+  .tag{font-size:10px;padding:1px 6px;border-radius:99px;border:1px solid var(--line);
+    color:var(--dim)}
+  .above{color:var(--up)} .below{color:var(--down)}
+  .x{color:var(--x);font-weight:700} .o{color:var(--o);font-weight:700}
+  .near{background:rgba(240,185,11,.13)}
+  .empty{padding:40px;text-align:center;color:var(--dim)}
+  footer{padding:7px 14px;color:var(--dim);font-size:11px;
+    border-top:1px solid var(--line);background:var(--panel)}
+</style>
+</head>
+<body>
+<header>
+  <div class="title">
+    <h1>EMA Board</h1>
+    <span class="sub">NSE ranks 251–750 · Smallcap 250 ∪ Microcap 250</span>
+    <span class="meta" id="meta">loading…</span>
+  </div>
+  <div class="filters">
+    <input type="search" id="q" placeholder="Search symbol or name…" autocomplete="off">
+    <select id="band"><option value="">All bands</option>
+      <option>Smallcap250</option><option>Microcap250</option></select>
+    <select id="ind"><option value="">All industries</option></select>
+    <div class="seg" id="side">
+      <button data-v="" class="on">Any</button>
+      <button data-v="Above">Above 44</button>
+      <button data-v="Below">Below 44</button>
+    </div>
+    <div class="seg" id="pnf">
+      <button data-v="" class="on">Any</button>
+      <button data-v="X">X demand</button>
+      <button data-v="O">O supply</button>
+    </div>
+    <label class="count">|dist| ≤
+      <input id="maxdist" type="number" step="0.5" min="0" placeholder="%" style="width:62px">
+    </label>
+    <button class="ghost" id="reset">Reset</button>
+    <span class="count" id="count"></span>
+  </div>
+</header>
+
+<div class="wrap">
+  <table>
+    <thead><tr id="hrow"></tr></thead>
+    <tbody id="tb"></tbody>
+  </table>
+  <div class="empty" id="empty" hidden>No rows match these filters.</div>
+</div>
+
+<footer id="foot"></footer>
+
+<script>
+const COLS = [
+  {k:'symbol',  t:'Symbol',   type:'s', cls:'l'},
+  {k:'industry',t:'Industry', type:'s', cls:'l'},
+  {k:'ltp',     t:'Spot',     type:'n'},
+  {k:'ema44',   t:'44 EMA',   type:'n'},
+  {k:'dist44',  t:'Dist %',   type:'n'},
+  {k:'side',    t:'Side',     type:'s'},
+  {k:'pnf',     t:'Col',      type:'s'},
+  {k:'ema9',    t:'9',        type:'n'},
+  {k:'ema14',   t:'14',       type:'n'},
+  {k:'ema25',   t:'25',       type:'n'},
+  {k:'ema50',   t:'50',       type:'n'},
+  {k:'ema100',  t:'100',      type:'n'},
+  {k:'ema200',  t:'200',      type:'n'},
+  {k:'high52',  t:'52w High', type:'n'},
+  {k:'d52h',    t:'% off H',  type:'n'},
+  {k:'low52',   t:'52w Low',  type:'n'},
+  {k:'d52l',    t:'% off L',  type:'n'},
+];
+let ROWS=[], sortK='dist44', sortAsc=true;
+const $=id=>document.getElementById(id);
+const num=v=>v==null||isNaN(v)?'—':Number(v).toLocaleString('en-IN',
+  {minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=v=>v==null||isNaN(v)?'—':(v>0?'+':'')+v.toFixed(2)+'%';
+
+function header(){
+  $('hrow').innerHTML = COLS.map(c=>
+    `<th data-k="${c.k}" class="${c.cls||''}">${c.t}<span class="ar" data-ar="${c.k}"></span></th>`
+  ).join('');
+  $('hrow').querySelectorAll('th').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;
+    if(sortK===k) sortAsc=!sortAsc; else {sortK=k; sortAsc=(k==='dist44');}
+    render();
+  });
+}
+
+async function load(){
+  const bust='?t='+Date.now();
+  const [lv,sp] = await Promise.all([
+    fetch('data/levels.json'+bust).then(r=>r.json()),
+    fetch('data/spot.json'+bust).then(r=>r.json()).catch(()=>({rows:[],counts:{}}))
+  ]);
+  const spot = Object.fromEntries((sp.rows||[]).map(r=>[r.symbol,r]));
+  ROWS = (lv.rows||[]).map(r=>{
+    const s = spot[r.symbol]||{};
+    const ltp = s.ltp ?? r.prev_close;
+    const d44 = (ltp!=null && r.ema44) ? (ltp-r.ema44)/r.ema44*100 : null;
+    return {...r, ltp,
+      stale: !!s.stale,
+      dist44: d44==null?null:+d44.toFixed(2),
+      side: d44==null?null:(d44>=0?'Above':'Below'),
+      d52h: (ltp!=null&&r.high52)?+(((ltp-r.high52)/r.high52)*100).toFixed(2):null,
+      d52l: (ltp!=null&&r.low52)?+(((ltp-r.low52)/r.low52)*100).toFixed(2):null};
+  });
+
+  const inds=[...new Set(ROWS.map(r=>r.industry).filter(Boolean))].sort();
+  const cur=$('ind').value;
+  $('ind').innerHTML='<option value="">All industries</option>'+
+    inds.map(i=>`<option${i===cur?' selected':''}>${i}</option>`).join('');
+
+  const fresh=sp.counts?.fresh??0, tot=sp.counts?.universe??ROWS.length;
+  const bad = tot? (tot-fresh)/tot : 1;
+  const cls = bad>0.5?'bad':(bad>0.05?'warn':'');
+  $('meta').innerHTML=
+    `<span class="dot ${cls}"></span>spot ${new Date(sp.generated_at||Date.now())
+      .toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`+
+    ` · ${fresh}/${tot} fresh · ${sp.fetch_path||'—'}`;
+  $('foot').textContent =
+    `Levels built ${lv.generated_at? new Date(lv.generated_at).toLocaleString('en-IN'):'—'}`+
+    ` · ${lv.counts?.built??0}/${lv.counts?.universe??0} names · EMAs & 52w are daily values;`+
+    ` Spot, Dist % and Side recompute live · PnF ${lv.pnf?.box_pct}% × ${lv.pnf?.reversal}`+
+    ` (X = demand, O = supply) · auto-refresh 60s`;
+  render();
+}
+
+function filtered(){
+  const q=$('q').value.trim().toLowerCase();
+  const b=$('band').value, i=$('ind').value;
+  const sd=$('side').querySelector('.on').dataset.v;
+  const pf=$('pnf').querySelector('.on').dataset.v;
+  const md=parseFloat($('maxdist').value);
+  return ROWS.filter(r=>{
+    if(q && !(r.symbol.toLowerCase().includes(q) ||
+             (r.name||'').toLowerCase().includes(q))) return false;
+    if(b && r.band!==b) return false;
+    if(i && r.industry!==i) return false;
+    if(sd && r.side!==sd) return false;
+    if(pf && r.pnf!==pf) return false;
+    if(!isNaN(md) && (r.dist44==null || Math.abs(r.dist44)>md)) return false;
+    return true;
+  });
+}
+
+function render(){
+  const col=COLS.find(c=>c.k===sortK)||COLS[4];
+  const rows=filtered().sort((a,b)=>{
+    let x=a[sortK], y=b[sortK];
+    if(sortK==='dist44'){ x=x==null?Infinity:Math.abs(x); y=y==null?Infinity:Math.abs(y); }
+    if(x==null) return 1; if(y==null) return -1;
+    const c = col.type==='n' ? x-y : String(x).localeCompare(String(y));
+    return sortAsc?c:-c;
+  });
+  document.querySelectorAll('[data-ar]').forEach(s=>s.textContent='');
+  const ar=document.querySelector(`[data-ar="${sortK}"]`); if(ar) ar.textContent=sortAsc?'▲':'▼';
+
+  $('count').textContent=`${rows.length} of ${ROWS.length}`;
+  $('empty').hidden = rows.length>0;
+  $('tb').innerHTML = rows.map(r=>`<tr class="${r.stale?'stale':''}">
+    <td class="l"><span class="sym"><a href="https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(r.symbol)}" target="_blank" rel="noopener">${r.symbol}</a></span>
+      <span class="nm" title="${(r.name||'').replace(/"/g,'')}">${r.name||''}</span></td>
+    <td class="l"><span class="tag">${r.industry||'—'}</span></td>
+    <td>${num(r.ltp)}</td>
+    <td>${num(r.ema44)}</td>
+    <td class="${r.dist44==null?'':(r.dist44>=0?'above':'below')} ${r.dist44!=null&&Math.abs(r.dist44)<=1?'near':''}">${pct(r.dist44)}</td>
+    <td class="${r.side==='Above'?'above':'below'}">${r.side||'—'}</td>
+    <td class="${r.pnf==='X'?'x':'o'}">${r.pnf||'—'}</td>
+    <td>${num(r.ema9)}</td><td>${num(r.ema14)}</td><td>${num(r.ema25)}</td>
+    <td>${num(r.ema50)}</td><td>${num(r.ema100)}</td><td>${num(r.ema200)}</td>
+    <td>${num(r.high52)}</td><td class="below">${pct(r.d52h)}</td>
+    <td>${num(r.low52)}</td><td class="above">${pct(r.d52l)}</td>
+  </tr>`).join('');
+}
+
+['q','band','ind','maxdist'].forEach(id=>$(id).oninput=render);
+['side','pnf'].forEach(id=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); render();
+}));
+$('reset').onclick=()=>{
+  $('q').value=''; $('band').value=''; $('ind').value=''; $('maxdist').value='';
+  ['side','pnf'].forEach(id=>{
+    $(id).querySelectorAll('button').forEach((x,n)=>x.classList.toggle('on',n===0));
+  });
+  sortK='dist44'; sortAsc=true; render();
+};
+
+header(); load();
+setInterval(load, 60000);   // matches the 1-minute refresh cadence
+</script>
+</body>
+</html>

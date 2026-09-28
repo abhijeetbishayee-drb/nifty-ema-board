@@ -1,0 +1,47 @@
+name: refresh spot
+
+# THE 1-MINUTE CADENCE DOES NOT COME FROM `schedule`.
+# GitHub throttles scheduled workflows hard and will not honour a 1-minute
+# cron. The real cadence comes from an external pinger (cron-job.org) calling
+# the workflow_dispatch API every minute -- the same arrangement
+# nifty-heatmap-web already runs. The cron below is only a safety net so the
+# board still moves if the pinger dies.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-spot
+  cancel-in-progress: true       # a superseded price fetch has no value
+
+jobs:
+  spot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -q requests
+
+      # Exits non-zero only if EVERY symbol failed. A partial sweep keeps the
+      # previous price, marks those rows stale, and the page greys them --
+      # reporting staleness beats showing an old price as if it were live.
+      - name: Fetch spot
+        run: python scripts/refresh_spot.py
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/spot.json
+          git diff --staged --quiet || git commit -m "spot $(date -u +%FT%TZ)"
+          git pull --rebase --autostash -q || true
+          git push
