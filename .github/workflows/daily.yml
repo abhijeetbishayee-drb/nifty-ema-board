@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip                 # pandas+numpy+yfinance is ~20s uncached
+          cache-dependency-path: requirements.txt
 
       - run: pip install -q -r requirements.txt
 
