@@ -205,7 +205,7 @@ def main() -> int:
     DATA.mkdir(exist_ok=True)
     (DATA / "levels.json").write_text(json.dumps(out, separators=(",", ":")))
 
-    print(f"OK  built {len(rows)}/{len(tickers)}  missing={len(missing)}")
+    print(f"OK  built {len(rows)}/{len(symbols)}  missing={len(missing)}")
     if missing:
         print("    missing:", ", ".join(sorted(missing)[:20]),
               "..." if len(missing) > 20 else "")

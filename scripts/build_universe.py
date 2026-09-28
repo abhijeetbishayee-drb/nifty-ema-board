@@ -120,6 +120,7 @@ def main() -> int:
 
     # Company names + industry, straight from NSE's own CSV.
     meta: dict[str, dict] = {}
+    dummies: list[str] = []
     for band_name in ("smallcap250", "microcap250"):
         rows = raw[band_name]
         skey = next(c for c in rows[0] if "Symbol" in c)
@@ -128,6 +129,14 @@ def main() -> int:
         for r in rows:
             sym = r[skey].strip()
             if not sym:
+                continue
+            # NSE carries DUMMY* placeholder scrips in its constituent files --
+            # corporate-action stubs (demergers etc.), e.g. "Dummy HEG Ltd.",
+            # "Dummy India Glycols ltd. 1". They are not tradeable and have no
+            # price history anywhere. Excluding them is what takes the raw list
+            # of 505 down to the 500 REAL names in ranks 251-750.
+            if sym.upper().startswith("DUMMY"):
+                dummies.append(sym)
                 continue
             meta[sym] = {
                 "symbol":   sym,
@@ -144,10 +153,13 @@ def main() -> int:
                       "UNION NIFTY Microcap 250",
         "partition_verified": True,
         "counts": {
-            "smallcap250": len(S["smallcap250"]),
-            "microcap250": len(S["microcap250"]),
-            "band_total":  len(universe),
+            "smallcap250":      len(S["smallcap250"]),
+            "microcap250":      len(S["microcap250"]),
+            "raw_band":         len(S["smallcap250"]) + len(S["microcap250"]),
+            "dummy_excluded":   len(dummies),
+            "tradeable_total":  len(universe),
         },
+        "dummy_excluded": sorted(dummies),
         "stocks": universe,
     }
 
@@ -155,8 +167,10 @@ def main() -> int:
     (DATA / "universe.json").write_text(json.dumps(out, indent=2))
 
     print(f"OK  partition verified (5/5 relations)")
-    print(f"    Smallcap250 {len(S['smallcap250'])}  + Microcap250 "
-          f"{len(S['microcap250'])}  = band {len(universe)}")
+    print(f"    Smallcap250 {len(S['smallcap250'])} + Microcap250 "
+          f"{len(S['microcap250'])} = {len(S['smallcap250']) + len(S['microcap250'])} raw")
+    print(f"    - {len(dummies)} DUMMY placeholder(s): {', '.join(sorted(dummies))}")
+    print(f"    = {len(universe)} tradeable names")
     print(f"    wrote {DATA / 'universe.json'}")
     return 0
 

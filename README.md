@@ -1,6 +1,6 @@
 # EMA Board — NSE ranks 251–750
 
-A self-updating table of the 505 NSE stocks ranked 251st to 750th by market
+A self-updating table of the 500 NSE stocks ranked 251st to 750th by market
 cap, tracking how close each one is to its **44 EMA**, which side of it price
 sits on, the full EMA ladder, 52-week extremes, and the current Point & Figure
 column (X = demand, O = supply).
@@ -35,10 +35,17 @@ TotalMarket − band == Nifty100 | Midcap150
 If NSE changes methodology the build **fails** rather than quietly emitting a
 list that is no longer ranks 251–750.
 
-**The count is 505, not 500, and that is correct.** Smallcap250 currently
-carries 251 names and Microcap250 carries 254; NSE constituent counts drift
-between semi-annual reconstitutions. The CSVs carry no market-cap column, so
-trimming to exactly 500 would mean inventing a ranking NSE does not publish.
+**The count is exactly 500, and the arithmetic is worth knowing.** Smallcap250
+carries 251 rows and Microcap250 carries 254 — 505 raw. Five of those are NSE
+**`DUMMY*` placeholder scrips**: corporate-action stubs (`Dummy HEG Ltd.`,
+`Dummy India Glycols ltd. 1` and `2`, `Dummy Inox Green Ltd.`, `Dummy Triveni
+Ltd.`) that are not tradeable and have no price history anywhere. Excluding
+them takes 505 → **500 real names**. Nothing is trimmed arbitrarily; the build
+records exactly which symbols it dropped and why.
+
+Raw constituent counts still drift between semi-annual reconstitutions, so the
+total may not stay at 500 forever — `data/universe.json` always reports
+`raw_band`, `dummy_excluded` and `tradeable_total` so a change is visible.
 
 Sector labels come from NSE's own `Industry` column (22 industries), so they
 stay current automatically — unlike a hand-curated map.
@@ -52,12 +59,12 @@ but **not** for `nsearchives.nseindia.com/content/indices/*`.
 ## Two cadences, because only one thing moves
 
 Every column except spot is a **daily** value. Re-deriving EMAs every minute
-for 505 names would be ~190k Yahoo requests/day and earns HTTP 429 — measured,
+for 500 names would be ~190k Yahoo requests/day and earns HTTP 429 — measured,
 not assumed.
 
 | job | when | output | cost |
 |---|---|---|---|
-| `scripts/daily_levels.py` | once, 15:45 IST | `data/levels.json` | 505 histories |
+| `scripts/daily_levels.py` | once, 15:45 IST | `data/levels.json` | 500 histories |
 | `scripts/refresh_spot.py` | every minute | `data/spot.json` | ~6 requests |
 
 The page joins them in the browser: **Dist %** and **Side** are recomputed from
@@ -67,7 +74,7 @@ anyone refetching a candle.
 ### Spot fetch has two paths
 
 * **primary** `v7/finance/quote`, 100 symbols per call → ~6 calls for the universe
-* **fallback** `v8/finance/chart`, 1 symbol per call → ~505 calls, threaded
+* **fallback** `v8/finance/chart`, 1 symbol per call → ~500 calls, threaded
 
 v7 needs a cookie+crumb pair and is ~80× cheaper when it works. The fallback is
 the path `nifty-heatmap-core` already proves in production. Whichever one ran is

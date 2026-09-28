@@ -1,12 +1,21 @@
 {
-  "generated_at": "2026-09-28T22:43:21.693550+05:30",
+  "generated_at": "2026-09-28T22:58:01.592659+05:30",
   "definition": "NSE ranks 251-750 by full market cap = NIFTY Smallcap 250 UNION NIFTY Microcap 250",
   "partition_verified": true,
   "counts": {
     "smallcap250": 251,
     "microcap250": 254,
-    "band_total": 505
+    "raw_band": 505,
+    "dummy_excluded": 5,
+    "tradeable_total": 500
   },
+  "dummy_excluded": [
+    "DUMMYHEG",
+    "DUMMYINGL1",
+    "DUMMYINGL2",
+    "DUMMYINXGN",
+    "DUMMYTRVN"
+  ],
   "stocks": [
     {
       "symbol": "AADHARHFC",
@@ -924,41 +933,6 @@
       "name": "DOMS Industries Ltd.",
       "industry": "Fast Moving Consumer Goods",
       "band": "Smallcap250"
-    },
-    {
-      "symbol": "DUMMYHEG",
-      "yahoo": "DUMMYHEG.NS",
-      "name": "Dummy HEG Ltd.",
-      "industry": "Metals & Mining",
-      "band": "Smallcap250"
-    },
-    {
-      "symbol": "DUMMYINGL1",
-      "yahoo": "DUMMYINGL1.NS",
-      "name": "Dummy India Glycols ltd. 1",
-      "industry": "Healthcare",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "DUMMYINGL2",
-      "yahoo": "DUMMYINGL2.NS",
-      "name": "Dummy India Glycols ltd. 2",
-      "industry": "Fast Moving Consumer Goods",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "DUMMYINXGN",
-      "yahoo": "DUMMYINXGN.NS",
-      "name": "Dummy Inox Green Ltd.",
-      "industry": "Construction",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "DUMMYTRVN",
-      "yahoo": "DUMMYTRVN.NS",
-      "name": "Dummy Triveni Ltd.",
-      "industry": "Capital Goods",
-      "band": "Microcap250"
     },
     {
       "symbol": "DYNAMATECH",
