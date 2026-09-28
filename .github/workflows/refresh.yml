@@ -29,7 +29,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - run: pip install -q requests
+      # yfinance, not raw requests: Actions IPs are blocked at Yahoo's edge
+      # for the plain JSON endpoints (measured fresh=0/500), while yfinance's
+      # cookie+crumb session works from the same runners.
+      - run: pip install -q -r requirements.txt
 
       # Exits non-zero only if EVERY symbol failed. A partial sweep keeps the
       # previous price, marks those rows stale, and the page greys them --
