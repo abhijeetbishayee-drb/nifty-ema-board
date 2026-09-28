@@ -36,12 +36,27 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-CORE = ROOT / "core"          # pnf-charts, vendored as a submodule
+CORE = ROOT / "core"          # pnf-charts, when it is available
 sys.path.insert(0, str(CORE))
 
-from pnf.boxes import BoxScale      # noqa: E402
-from pnf.chart import PnFChart      # noqa: E402
-from pnf import data as pnfdata     # noqa: E402
+# PnF is OPTIONAL and the board degrades cleanly without it.
+#
+# pnf-charts is a PRIVATE repo, so a public runner cannot clone it as a
+# submodule (observed: "Repository not found" from actions/checkout). Rather
+# than duplicate the box arithmetic here -- which would give this board and the
+# PnF board two sources of truth for one fact, the exact thing parity_check.py
+# exists to prevent in fno-rollover -- the column is emitted as null when the
+# engine is absent, and the page shows a dash. Wiring it up is a deliberate
+# choice between publishing pnf-charts and giving Actions a read credential.
+try:
+    from pnf.boxes import BoxScale          # noqa: E402
+    from pnf.chart import PnFChart          # noqa: E402
+    PNF_AVAILABLE = True
+except Exception:
+    BoxScale = PnFChart = None              # type: ignore
+    PNF_AVAILABLE = False
+
+import yfinance as yf                       # noqa: E402
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
@@ -65,12 +80,46 @@ def ema(series: pd.Series, span: int) -> pd.Series:
     return pd.Series(out, index=series.index[span - 1:])
 
 
+def fetch_many(symbols: list[str], period: str = HISTORY,
+               chunk: int = 40) -> dict[str, pd.DataFrame]:
+    """OHLC for many symbols, batched.
+
+    505 separate downloads is 505 round-trips and Yahoo throttles well before
+    the end of that (HTTP 429, measured 2026-09-28). yfinance batches a list
+    into far fewer calls and handles the cookie/crumb dance itself.
+    """
+    out: dict[str, pd.DataFrame] = {}
+    for i in range(0, len(symbols), chunk):
+        batch = symbols[i:i + chunk]
+        print(f"  [data] {i + 1}-{i + len(batch)} of {len(symbols)}", flush=True)
+        try:
+            raw = yf.download([f"{s}.NS" for s in batch], period=period,
+                              interval="1d", progress=False, auto_adjust=False,
+                              group_by="ticker", threads=True)
+        except Exception as e:
+            print(f"  [data] batch failed: {e}", flush=True)
+            continue
+        for s in batch:
+            tkr = f"{s}.NS"
+            try:
+                df = raw[tkr] if isinstance(raw.columns, pd.MultiIndex) else raw
+                df = df[[c for c in ("Open", "High", "Low", "Close", "Volume")
+                         if c in df.columns]].dropna(how="all")
+                if not df.empty:
+                    out[s] = df
+            except Exception:
+                pass
+    return out
+
+
 def pnf_column(df: pd.DataFrame, symbol: str) -> dict:
     """Current PnF column: X = demand, O = supply.
 
     Same box scale the PnF board draws with, so a name reads identically here
     and there. Anything else would be two sources of truth for one fact.
     """
+    if not PNF_AVAILABLE:
+        return {"pnf": None, "pnf_boxes": None}
     try:
         ch = PnFChart.from_ohlc(df, BoxScale(PNF_BOX_PCT, PNF_REVERSAL), symbol)
         if not ch.columns:
@@ -130,7 +179,7 @@ def main() -> int:
     # fetch_many keys its result by the INPUT symbol and appends .NS itself,
     # so bare NSE symbols in means bare NSE symbols out.
     print(f"fetching {len(symbols)} symbols x {HISTORY} daily ...", flush=True)
-    frames = pnfdata.fetch_many(symbols, period=HISTORY, interval="1d")
+    frames = fetch_many(symbols, period=HISTORY)
 
     rows, missing = [], []
     for sym in symbols:
@@ -145,7 +194,8 @@ def main() -> int:
         "generated_at": datetime.now(IST).isoformat(),
         "history": HISTORY,
         "ema_spans": EMA_SPANS,
-        "pnf": {"box_pct": PNF_BOX_PCT, "reversal": PNF_REVERSAL,
+        "pnf": {"available": PNF_AVAILABLE, "box_pct": PNF_BOX_PCT,
+                "reversal": PNF_REVERSAL,
                 "legend": {"X": "demand", "O": "supply"}},
         "counts": {"universe": len(symbols), "built": len(rows),
                    "missing": len(missing)},
