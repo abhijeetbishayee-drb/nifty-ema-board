@@ -134,8 +134,27 @@ cannot be removed. The page's freshness clock shows the truth either way.
 | % off H / % off L | computed live | distance from each extreme |
 
 PnF uses **0.25% × 3 on daily bars** — the same box scale `pnf-charts` draws
-with, so a name reads identically on this board and on the PnF board. Anything
-else would be two sources of truth for one fact.
+with, so a name reads identically on this board and on the PnF board.
+
+`pnf-charts` is private, so a public runner cannot clone it as a submodule and
+the column came back empty on the first build. `scripts/pnf_column.py` is a
+self-contained port of its box arithmetic instead. Porting a **fixed algorithm**
+is not the same risk as duplicating a **curated taxonomy** — PnF box maths does
+not drift, only the two constants `(box_pct, reversal)` can — so those are
+pinned and guarded:
+
+```
+python3 tests/test_pnf_parity.py
+OK    preset matches pnf-charts short = 0.25% x 3
+OK    216/216 symbols identical (direction + box count)
+OK    self-check: reversal 3->5 changes BAJAJ-AUTO (('X', 4) -> ('O', 8)), so the comparison can fail
+```
+
+The test needs the private repo, so it runs on the Mac and **skips loudly** on a
+runner rather than passing vacuously. Run it before trusting any change to
+`pnf_column.py`. Its third assertion exists because the first version of the
+self-check sampled one symbol and produced a false negative — a name whose final
+column is one long extension legitimately agrees under 3 and 5 boxes.
 
 `ema_ok` in `levels.json` records which spans had enough history to be
 trustworthy. A 200 EMA needs >200 sessions; 2 years (~500) is pulled. A value

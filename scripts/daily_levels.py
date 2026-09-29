@@ -36,33 +36,26 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
-CORE = ROOT / "core"          # pnf-charts, when it is available
-sys.path.insert(0, str(CORE))
+sys.path.insert(0, str(ROOT / "scripts"))
 
-# PnF is OPTIONAL and the board degrades cleanly without it.
-#
-# pnf-charts is a PRIVATE repo, so a public runner cannot clone it as a
-# submodule (observed: "Repository not found" from actions/checkout). Rather
-# than duplicate the box arithmetic here -- which would give this board and the
-# PnF board two sources of truth for one fact, the exact thing parity_check.py
-# exists to prevent in fno-rollover -- the column is emitted as null when the
-# engine is absent, and the page shows a dash. Wiring it up is a deliberate
-# choice between publishing pnf-charts and giving Actions a read credential.
-try:
-    from pnf.boxes import BoxScale          # noqa: E402
-    from pnf.chart import PnFChart          # noqa: E402
-    PNF_AVAILABLE = True
-except Exception:
-    BoxScale = PnFChart = None              # type: ignore
-    PNF_AVAILABLE = False
+# PnF comes from a self-contained port, NOT from the private pnf-charts repo --
+# a public runner cannot clone that ("Repository not found" at checkout), which
+# is what left this column null on 2026-09-28. The port is proved identical to
+# the real engine by tests/test_pnf_parity.py (216/216 cached symbols, same
+# direction and box count), and that test also asserts the box preset has not
+# drifted and demonstrates it is capable of failing. See scripts/pnf_column.py
+# for why porting a fixed algorithm is safe where duplicating a curated
+# taxonomy would not be.
+import pnf_column                            # noqa: E402
+import yfinance as yf                        # noqa: E402
 
-import yfinance as yf                       # noqa: E402
+PNF_AVAILABLE = True
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
 EMA_SPANS = [9, 14, 25, 44, 50, 100, 200]
-PNF_BOX_PCT = 0.25               # matches pnf-charts "short" preset
-PNF_REVERSAL = 3                 # daily 0.25% x 3, same as the PnF board
+PNF_BOX_PCT = pnf_column.BOX_PCT   # 0.25 -- pinned to pnf-charts "short"
+PNF_REVERSAL = pnf_column.REVERSAL # 3    -- daily 0.25% x 3, same as PnF board
 HISTORY = "2y"
 MIN_BARS_FOR_52W = 200           # ~10 months; below this the 52w range is a lie
 
@@ -112,23 +105,24 @@ def fetch_many(symbols: list[str], period: str = HISTORY,
     return out
 
 
-def pnf_column(df: pd.DataFrame, symbol: str) -> dict:
+def pnf_col(df: pd.DataFrame, symbol: str) -> dict:
     """Current PnF column: X = demand, O = supply.
 
     Same box scale the PnF board draws with, so a name reads identically here
-    and there. Anything else would be two sources of truth for one fact.
+    and there -- which is the point of pinning the preset rather than choosing
+    one.
     """
-    if not PNF_AVAILABLE:
+    if "High" not in df or "Low" not in df:
         return {"pnf": None, "pnf_boxes": None}
     try:
-        ch = PnFChart.from_ohlc(df, BoxScale(PNF_BOX_PCT, PNF_REVERSAL), symbol)
-        if not ch.columns:
+        res = pnf_column.last_column(
+            df["High"].astype(float).tolist(),
+            df["Low"].astype(float).tolist(),
+            PNF_BOX_PCT, PNF_REVERSAL)
+        if res is None:
             return {"pnf": None, "pnf_boxes": None}
-        col = ch.columns[-1]
-        return {
-            "pnf": "X" if col.direction > 0 else "O",
-            "pnf_boxes": col.boxes,
-        }
+        direction, boxes = res
+        return {"pnf": direction, "pnf_boxes": boxes}
     except Exception:
         return {"pnf": None, "pnf_boxes": None}
 
@@ -167,7 +161,7 @@ def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
     else:
         row["high52"] = row["low52"] = None
 
-    row.update(pnf_column(df, meta["symbol"]))
+    row.update(pnf_col(df, meta["symbol"]))
     return row
 
 
