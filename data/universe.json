@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T22:58:45.052584+05:30",
+  "generated_at": "2026-09-29T15:04:04.156041+05:30",
   "definition": "NSE ranks 251-750 by full market cap = NIFTY Smallcap 250 UNION NIFTY Microcap 250",
   "partition_verified": true,
   "counts": {
