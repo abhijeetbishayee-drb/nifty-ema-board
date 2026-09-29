@@ -96,6 +96,11 @@
     <label class="count">|dist| ≤
       <input id="maxdist" type="number" step="0.5" min="0" placeholder="%" style="width:62px">
     </label>
+    <label class="count" title="Boxes in the current PnF column: few = a fresh reversal, many = an extended run">boxes
+      <input id="minbox" type="number" step="1" min="1" placeholder="min" style="width:58px">
+      –
+      <input id="maxbox" type="number" step="1" min="1" placeholder="max" style="width:58px">
+    </label>
     <button class="ghost" id="reset">Reset</button>
     <span class="count" id="count"></span>
   </div>
@@ -120,6 +125,7 @@ const COLS = [
   {k:'dist44',  t:'Dist %',   type:'n'},
   {k:'side',    t:'Side',     type:'s'},
   {k:'pnf',     t:'Col',      type:'s'},
+  {k:'pnf_boxes',t:'Boxes',   type:'n'},
   {k:'ema9',    t:'9',        type:'n'},
   {k:'ema14',   t:'14',       type:'n'},
   {k:'ema25',   t:'25',       type:'n'},
@@ -193,6 +199,7 @@ function filtered(){
   const sd=$('side').querySelector('.on').dataset.v;
   const pf=$('pnf').querySelector('.on').dataset.v;
   const md=parseFloat($('maxdist').value);
+  const bmin=parseInt($('minbox').value,10), bmax=parseInt($('maxbox').value,10);
   return ROWS.filter(r=>{
     if(q && !(r.symbol.toLowerCase().includes(q) ||
              (r.name||'').toLowerCase().includes(q))) return false;
@@ -201,6 +208,9 @@ function filtered(){
     if(sd && r.side!==sd) return false;
     if(pf && r.pnf!==pf) return false;
     if(!isNaN(md) && (r.dist44==null || Math.abs(r.dist44)>md)) return false;
+    // A null box count must not pass a numeric filter -- it is unknown, not small.
+    if(!isNaN(bmin) && (r.pnf_boxes==null || r.pnf_boxes<bmin)) return false;
+    if(!isNaN(bmax) && (r.pnf_boxes==null || r.pnf_boxes>bmax)) return false;
     return true;
   });
 }
@@ -228,6 +238,7 @@ function render(){
     <td class="${r.dist44==null?'':(r.dist44>=0?'above':'below')} ${r.dist44!=null&&Math.abs(r.dist44)<=1?'near':''}">${pct(r.dist44)}</td>
     <td class="${r.side==='Above'?'above':'below'}">${r.side||'—'}</td>
     <td class="${r.pnf==='X'?'x':'o'}">${r.pnf||'—'}</td>
+    <td class="${r.pnf==='X'?'x':'o'}">${r.pnf_boxes==null?'—':r.pnf_boxes}</td>
     <td>${num(r.ema9)}</td><td>${num(r.ema14)}</td><td>${num(r.ema25)}</td>
     <td>${num(r.ema50)}</td><td>${num(r.ema100)}</td><td>${num(r.ema200)}</td>
     <td>${num(r.high52)}</td><td class="below">${pct(r.d52h)}</td>
@@ -235,13 +246,14 @@ function render(){
   </tr>`).join('');
 }
 
-['q','band','ind','maxdist'].forEach(id=>$(id).oninput=render);
+['q','band','ind','maxdist','minbox','maxbox'].forEach(id=>$(id).oninput=render);
 ['side','pnf'].forEach(id=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
   $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on'); render();
 }));
 $('reset').onclick=()=>{
   $('q').value=''; $('band').value=''; $('ind').value=''; $('maxdist').value='';
+  $('minbox').value=''; $('maxbox').value='';
   ['side','pnf'].forEach(id=>{
     $(id).querySelectorAll('button').forEach((x,n)=>x.classList.toggle('on',n===0));
   });
