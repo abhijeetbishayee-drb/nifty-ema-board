@@ -1,13 +1,15 @@
 {
-  "generated_at": "2026-09-29T22:02:32.339904+05:30",
-  "definition": "NSE ranks 251-750 by full market cap = NIFTY Smallcap 250 UNION NIFTY Microcap 250",
+  "generated_at": "2026-09-30T13:51:50.519778+05:30",
+  "definition": "NSE ranks 1-750 by full market cap = NIFTY 100 UNION NIFTY Midcap 150 UNION NIFTY Smallcap 250 UNION NIFTY Microcap 250 (== NIFTY Total Market)",
   "partition_verified": true,
   "counts": {
+    "nifty100": 100,
+    "midcap150": 150,
     "smallcap250": 251,
     "microcap250": 254,
-    "raw_band": 505,
+    "raw_band": 755,
     "dummy_excluded": 5,
-    "tradeable_total": 500
+    "tradeable_total": 750
   },
   "dummy_excluded": [
     "DUMMYHEG",
@@ -18,18 +20,18 @@
   ],
   "stocks": [
     {
+      "symbol": "360ONE",
+      "yahoo": "360ONE.NS",
+      "name": "360 ONE WAM Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "AADHARHFC",
       "yahoo": "AADHARHFC.NS",
       "name": "Aadhar Housing Finance Ltd.",
       "industry": "Financial Services",
       "band": "Smallcap250"
-    },
-    {
-      "symbol": "AARTIDRUGS",
-      "yahoo": "AARTIDRUGS.NS",
-      "name": "Aarti Drugs Ltd.",
-      "industry": "Healthcare",
-      "band": "Microcap250"
     },
     {
       "symbol": "AARTIIND",
@@ -53,6 +55,27 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "ABB",
+      "yahoo": "ABB.NS",
+      "name": "ABB India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ABBOTINDIA",
+      "yahoo": "ABBOTINDIA.NS",
+      "name": "Abbott India Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "ABCAPITAL",
+      "yahoo": "ABCAPITAL.NS",
+      "name": "Aditya Birla Capital Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "ABDL",
       "yahoo": "ABDL.NS",
       "name": "Allied Blenders and Distillers Ltd.",
@@ -64,14 +87,14 @@
       "yahoo": "ABFRL.NS",
       "name": "Aditya Birla Fashion and Retail Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "ABLBL",
       "yahoo": "ABLBL.NS",
       "name": "Aditya Birla Lifestyle Brands Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "ABREL",
@@ -85,6 +108,13 @@
       "yahoo": "ABSLAMC.NS",
       "name": "Aditya Birla Sun Life AMC Ltd.",
       "industry": "Financial Services",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "ACC",
+      "yahoo": "ACC.NS",
+      "name": "ACC Ltd.",
+      "industry": "Construction Materials",
       "band": "Smallcap250"
     },
     {
@@ -116,6 +146,41 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "ADANIENSOL",
+      "yahoo": "ADANIENSOL.NS",
+      "name": "Adani Energy Solutions Ltd.",
+      "industry": "Power",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ADANIENT",
+      "yahoo": "ADANIENT.NS",
+      "name": "Adani Enterprises Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ADANIGREEN",
+      "yahoo": "ADANIGREEN.NS",
+      "name": "Adani Green Energy Ltd.",
+      "industry": "Power",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ADANIPORTS",
+      "yahoo": "ADANIPORTS.NS",
+      "name": "Adani Ports and Special Economic Zone Ltd.",
+      "industry": "Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ADANIPOWER",
+      "yahoo": "ADANIPOWER.NS",
+      "name": "Adani Power Ltd.",
+      "industry": "Power",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "ADVENZYMES",
       "yahoo": "ADVENZYMES.NS",
       "name": "Advanced Enzyme Tech Ltd.",
@@ -144,11 +209,18 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "AEROFLEX",
+      "yahoo": "AEROFLEX.NS",
+      "name": "Aeroflex Industries Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "AETHER",
       "yahoo": "AETHER.NS",
       "name": "Aether Industries Ltd.",
       "industry": "Chemicals",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "AFCONS",
@@ -165,18 +237,25 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "AGARWALEYE",
-      "yahoo": "AGARWALEYE.NS",
-      "name": "Dr. Agarwal's Health Care Ltd.",
-      "industry": "Healthcare",
-      "band": "Microcap250"
+      "symbol": "AIAENG",
+      "yahoo": "AIAENG.NS",
+      "name": "AIA Engineering Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
-      "symbol": "AHLUCONT",
-      "yahoo": "AHLUCONT.NS",
-      "name": "Ahluwalia Contracts (India) Ltd.",
-      "industry": "Construction",
-      "band": "Microcap250"
+      "symbol": "AIIL",
+      "yahoo": "AIIL.NS",
+      "name": "Authum Investment & Infrastructure Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "AJANTPHARM",
+      "yahoo": "AJANTPHARM.NS",
+      "name": "Ajanta Pharmaceuticals Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "AKUMS",
@@ -186,11 +265,11 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "ALIVUS",
-      "yahoo": "ALIVUS.NS",
-      "name": "Alivus Life Sciences Ltd.",
+      "symbol": "ALKEM",
+      "yahoo": "ALKEM.NS",
+      "name": "Alkem Laboratories Ltd.",
       "industry": "Healthcare",
-      "band": "Microcap250"
+      "band": "Midcap150"
     },
     {
       "symbol": "ALKYLAMINE",
@@ -200,10 +279,10 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "ALOKINDS",
-      "yahoo": "ALOKINDS.NS",
-      "name": "Alok Industries Ltd.",
-      "industry": "Textiles",
+      "symbol": "AMAGI",
+      "yahoo": "AMAGI.NS",
+      "name": "Amagi Media Labs Ltd.",
+      "industry": "Information Technology",
       "band": "Microcap250"
     },
     {
@@ -212,6 +291,13 @@
       "name": "Amber Enterprises India Ltd.",
       "industry": "Consumer Durables",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "AMBUJACEM",
+      "yahoo": "AMBUJACEM.NS",
+      "name": "Ambuja Cements Ltd.",
+      "industry": "Construction Materials",
+      "band": "Nifty100"
     },
     {
       "symbol": "ANANDRATHI",
@@ -235,11 +321,11 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "ANUP",
-      "yahoo": "ANUP.NS",
-      "name": "The Anup Engineering Ltd.",
-      "industry": "Capital Goods",
-      "band": "Microcap250"
+      "symbol": "ANTHEM",
+      "yahoo": "ANTHEM.NS",
+      "name": "Anthem Biosciences Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "ANURAS",
@@ -249,11 +335,18 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "APLLTD",
-      "yahoo": "APLLTD.NS",
-      "name": "Alembic Pharmaceuticals Ltd.",
-      "industry": "Healthcare",
-      "band": "Microcap250"
+      "symbol": "APARINDS",
+      "yahoo": "APARINDS.NS",
+      "name": "Apar Industries Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "APLAPOLLO",
+      "yahoo": "APLAPOLLO.NS",
+      "name": "APL Apollo Tubes Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "APOLLO",
@@ -261,6 +354,20 @@
       "name": "Apollo Micro Systems Ltd.",
       "industry": "Capital Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "APOLLOHOSP",
+      "yahoo": "APOLLOHOSP.NS",
+      "name": "Apollo Hospitals Enterprise Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "APOLLOTYRE",
+      "yahoo": "APOLLOTYRE.NS",
+      "name": "Apollo Tyres Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Smallcap250"
     },
     {
       "symbol": "APTUS",
@@ -312,18 +419,32 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "ASKAUTOLTD",
-      "yahoo": "ASKAUTOLTD.NS",
-      "name": "ASK Automotive Ltd.",
-      "industry": "Automobile and Auto Components",
-      "band": "Microcap250"
+      "symbol": "ASHOKLEY",
+      "yahoo": "ASHOKLEY.NS",
+      "name": "Ashok Leyland Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "yahoo": "ASIANPAINT.NS",
+      "name": "Asian Paints Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Nifty100"
     },
     {
       "symbol": "ASTERDM",
       "yahoo": "ASTERDM.NS",
       "name": "Aster DM Quality Care Ltd.",
       "industry": "Healthcare",
-      "band": "Smallcap250"
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "ASTRAL",
+      "yahoo": "ASTRAL.NS",
+      "name": "Astral Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "ASTRAMICRO",
@@ -331,6 +452,13 @@
       "name": "Astra Microwave Products Ltd.",
       "industry": "Capital Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "ATGL",
+      "yahoo": "ATGL.NS",
+      "name": "Adani Total Gas Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Midcap150"
     },
     {
       "symbol": "ATHERENERG",
@@ -354,11 +482,25 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "AUBANK",
+      "yahoo": "AUBANK.NS",
+      "name": "AU Small Finance Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "AURIONPRO",
       "yahoo": "AURIONPRO.NS",
       "name": "Aurionpro Solution Ltd.",
       "industry": "Information Technology",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "AUROPHARMA",
+      "yahoo": "AUROPHARMA.NS",
+      "name": "Aurobindo Pharma Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "AVALON",
@@ -372,7 +514,7 @@
       "yahoo": "AVANTIFEED.NS",
       "name": "Avanti Feeds Ltd.",
       "industry": "Fast Moving Consumer Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "AVL",
@@ -382,11 +524,18 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "AWFIS",
-      "yahoo": "AWFIS.NS",
-      "name": "Awfis Space Solutions Ltd.",
-      "industry": "Services",
-      "band": "Microcap250"
+      "symbol": "AWL",
+      "yahoo": "AWL.NS",
+      "name": "AWL Agri Business Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "AXISBANK",
+      "yahoo": "AXISBANK.NS",
+      "name": "Axis Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "AXISCADES",
@@ -400,14 +549,56 @@
       "yahoo": "AZAD.NS",
       "name": "Azad Engineering Ltd.",
       "industry": "Capital Goods",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "BAGMANE",
+      "yahoo": "BAGMANE.NS",
+      "name": "Bagmane Prime Office REIT",
+      "industry": "Realty",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "BAJAJ-AUTO",
+      "yahoo": "BAJAJ-AUTO.NS",
+      "name": "Bajaj Auto Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BAJAJCON",
+      "yahoo": "BAJAJCON.NS",
+      "name": "Bajaj Consumer Care Ltd.",
+      "industry": "Fast Moving Consumer Goods",
       "band": "Microcap250"
     },
     {
-      "symbol": "BAJAJELEC",
-      "yahoo": "BAJAJELEC.NS",
-      "name": "Bajaj Electricals Ltd",
-      "industry": "Consumer Durables",
-      "band": "Microcap250"
+      "symbol": "BAJAJFINSV",
+      "yahoo": "BAJAJFINSV.NS",
+      "name": "Bajaj Finserv Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BAJAJHFL",
+      "yahoo": "BAJAJHFL.NS",
+      "name": "Bajaj Housing Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "BAJAJHLDNG",
+      "yahoo": "BAJAJHLDNG.NS",
+      "name": "Bajaj Holdings & Investment Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "yahoo": "BAJFINANCE.NS",
+      "name": "Bajaj Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "BALAMINES",
@@ -415,6 +606,13 @@
       "name": "Balaji Amines Ltd.",
       "industry": "Chemicals",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "BALKRISIND",
+      "yahoo": "BALKRISIND.NS",
+      "name": "Balkrishna Industries Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
     },
     {
       "symbol": "BALRAMCHIN",
@@ -445,6 +643,20 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "BANKBARODA",
+      "yahoo": "BANKBARODA.NS",
+      "name": "Bank of Baroda",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BANKINDIA",
+      "yahoo": "BANKINDIA.NS",
+      "name": "Bank of India",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "BATAINDIA",
       "yahoo": "BATAINDIA.NS",
       "name": "Bata India Ltd.",
@@ -452,25 +664,18 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "BAYERCROP",
-      "yahoo": "BAYERCROP.NS",
-      "name": "Bayer Cropscience Ltd.",
-      "industry": "Chemicals",
-      "band": "Smallcap250"
-    },
-    {
       "symbol": "BBOX",
       "yahoo": "BBOX.NS",
       "name": "Black Box Ltd.",
       "industry": "Information Technology",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
-      "symbol": "BBTC",
-      "yahoo": "BBTC.NS",
-      "name": "Bombay Burmah Trading Corporation Ltd.",
-      "industry": "Fast Moving Consumer Goods",
-      "band": "Smallcap250"
+      "symbol": "BDL",
+      "yahoo": "BDL.NS",
+      "name": "Bharat Dynamics Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "BECTORFOOD",
@@ -478,6 +683,13 @@
       "name": "Mrs. Bectors Food Specialities Ltd.",
       "industry": "Fast Moving Consumer Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "BEL",
+      "yahoo": "BEL.NS",
+      "name": "Bharat Electronics Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
     },
     {
       "symbol": "BELRISE",
@@ -494,10 +706,59 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "BIKAJI",
-      "yahoo": "BIKAJI.NS",
-      "name": "Bikaji Foods International Ltd.",
-      "industry": "Fast Moving Consumer Goods",
+      "symbol": "BERGEPAINT",
+      "yahoo": "BERGEPAINT.NS",
+      "name": "Berger Paints India Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "BHARATCOAL",
+      "yahoo": "BHARATCOAL.NS",
+      "name": "Bharat Coking Coal Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "BHARATFORG",
+      "yahoo": "BHARATFORG.NS",
+      "name": "Bharat Forge Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "yahoo": "BHARTIARTL.NS",
+      "name": "Bharti Airtel Ltd.",
+      "industry": "Telecommunication",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BHARTIHEXA",
+      "yahoo": "BHARTIHEXA.NS",
+      "name": "Bharti Hexacom Ltd.",
+      "industry": "Telecommunication",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "BHEL",
+      "yahoo": "BHEL.NS",
+      "name": "Bharat Heavy Electricals Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "BIOCON",
+      "yahoo": "BIOCON.NS",
+      "name": "Biocon Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "BIRET",
+      "yahoo": "BIRET.NS",
+      "name": "Brookfield India Real Estate Trust",
+      "industry": "Realty",
       "band": "Smallcap250"
     },
     {
@@ -522,18 +783,18 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "BLUEDART",
-      "yahoo": "BLUEDART.NS",
-      "name": "Blue Dart Express Ltd.",
-      "industry": "Services",
-      "band": "Smallcap250"
-    },
-    {
       "symbol": "BLUEJET",
       "yahoo": "BLUEJET.NS",
       "name": "Blue Jet Healthcare Ltd.",
       "industry": "Healthcare",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "BLUESTARCO",
+      "yahoo": "BLUESTARCO.NS",
+      "name": "Blue Star Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
     },
     {
       "symbol": "BLUESTONE",
@@ -550,11 +811,39 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "BOSCHLTD",
+      "yahoo": "BOSCHLTD.NS",
+      "name": "Bosch Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BPCL",
+      "yahoo": "BPCL.NS",
+      "name": "Bharat Petroleum Corporation Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "BRIGADE",
       "yahoo": "BRIGADE.NS",
       "name": "Brigade Enterprises Ltd.",
       "industry": "Realty",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "BRITANNIA",
+      "yahoo": "BRITANNIA.NS",
+      "name": "Britannia Industries Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "BSE",
+      "yahoo": "BSE.NS",
+      "name": "BSE Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "BSOFT",
@@ -576,6 +865,13 @@
       "name": "Computer Age Management Services Ltd.",
       "industry": "Financial Services",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "CANBK",
+      "yahoo": "CANBK.NS",
+      "name": "Canara Bank",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "CANFINHOME",
@@ -655,6 +951,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "CEIGALL",
+      "yahoo": "CEIGALL.NS",
+      "name": "Ceigall India Ltd.",
+      "industry": "Construction",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "CELLO",
       "yahoo": "CELLO.NS",
       "name": "Cello World Ltd.",
@@ -676,10 +979,10 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "CENTURYPLY",
-      "yahoo": "CENTURYPLY.NS",
-      "name": "Century Plyboards (India) Ltd.",
-      "industry": "Consumer Durables",
+      "symbol": "CENTUM",
+      "yahoo": "CENTUM.NS",
+      "name": "Centum Electronics Ltd.",
+      "industry": "Capital Goods",
       "band": "Microcap250"
     },
     {
@@ -704,11 +1007,18 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "CGPOWER",
+      "yahoo": "CGPOWER.NS",
+      "name": "CG Power and Industrial Solutions Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "CHALET",
       "yahoo": "CHALET.NS",
       "name": "Chalet Hotels Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "CHAMBLFERT",
@@ -732,6 +1042,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "CHOLAFIN",
+      "yahoo": "CHOLAFIN.NS",
+      "name": "Cholamandalam Investment and Finance Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "CHOLAHLDNG",
       "yahoo": "CHOLAHLDNG.NS",
       "name": "Cholamandalam Financial Holdings Ltd.",
@@ -746,11 +1063,39 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "CIPLA",
+      "yahoo": "CIPLA.NS",
+      "name": "Cipla Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "CLEAN",
       "yahoo": "CLEAN.NS",
       "name": "Clean Science and Technology Ltd.",
       "industry": "Chemicals",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "CLEANMAX",
+      "yahoo": "CLEANMAX.NS",
+      "name": "Clean Max Enviro Energy Solutions Ltd.",
+      "industry": "Power",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "CMPDI",
+      "yahoo": "CMPDI.NS",
+      "name": "Central Mine Planning & Design Institute Ltd.",
+      "industry": "Services",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "CMRGREEN",
+      "yahoo": "CMRGREEN.NS",
+      "name": "CMR Green Technologies Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
     },
     {
       "symbol": "CMSINFO",
@@ -760,11 +1105,46 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "COALINDIA",
+      "yahoo": "COALINDIA.NS",
+      "name": "Coal India Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "COCHINSHIP",
+      "yahoo": "COCHINSHIP.NS",
+      "name": "Cochin Shipyard Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "COFORGE",
+      "yahoo": "COFORGE.NS",
+      "name": "Coforge Ltd.",
+      "industry": "Information Technology",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "COHANCE",
       "yahoo": "COHANCE.NS",
       "name": "Cohance Lifesciences Ltd.",
       "industry": "Healthcare",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "COLPAL",
+      "yahoo": "COLPAL.NS",
+      "name": "Colgate Palmolive (India) Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "CONCOR",
+      "yahoo": "CONCOR.NS",
+      "name": "Container Corporation of India Ltd.",
+      "industry": "Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "CONCORDBIO",
@@ -774,11 +1154,11 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "CORONA",
-      "yahoo": "CORONA.NS",
-      "name": "CORONA Remedies Ltd.",
-      "industry": "Healthcare",
-      "band": "Microcap250"
+      "symbol": "COROMANDEL",
+      "yahoo": "COROMANDEL.NS",
+      "name": "Coromandel International Ltd.",
+      "industry": "Chemicals",
+      "band": "Midcap150"
     },
     {
       "symbol": "CPPLUS",
@@ -809,11 +1189,11 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "CRIZAC",
-      "yahoo": "CRIZAC.NS",
-      "name": "Crizac Ltd.",
-      "industry": "Consumer Services",
-      "band": "Microcap250"
+      "symbol": "CRISIL",
+      "yahoo": "CRISIL.NS",
+      "name": "CRISIL Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "CROMPTON",
@@ -837,11 +1217,18 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "CUMMINSIND",
+      "yahoo": "CUMMINSIND.NS",
+      "name": "Cummins India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "CUPID",
       "yahoo": "CUPID.NS",
       "name": "Cupid Ltd.",
       "industry": "Fast Moving Consumer Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "CYIENT",
@@ -849,6 +1236,20 @@
       "name": "Cyient Ltd.",
       "industry": "Information Technology",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "DABUR",
+      "yahoo": "DABUR.NS",
+      "name": "Dabur India Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "DALBHARAT",
+      "yahoo": "DALBHARAT.NS",
+      "name": "Dalmia Bharat Ltd.",
+      "industry": "Construction Materials",
+      "band": "Midcap150"
     },
     {
       "symbol": "DATAMATICS",
@@ -886,13 +1287,6 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "DCMSHRIRAM",
-      "yahoo": "DCMSHRIRAM.NS",
-      "name": "DCM Shriram Ltd.",
-      "industry": "Diversified",
-      "band": "Smallcap250"
-    },
-    {
       "symbol": "DEEPAKFERT",
       "yahoo": "DEEPAKFERT.NS",
       "name": "Deepak Fertilisers & Petrochemicals Corp. Ltd.",
@@ -928,6 +1322,34 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "DIVISLAB",
+      "yahoo": "DIVISLAB.NS",
+      "name": "Divi's Laboratories Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "DIXON",
+      "yahoo": "DIXON.NS",
+      "name": "Dixon Technologies (India) Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "DLF",
+      "yahoo": "DLF.NS",
+      "name": "DLF Ltd.",
+      "industry": "Realty",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "DMART",
+      "yahoo": "DMART.NS",
+      "name": "Avenue Supermarts Ltd.",
+      "industry": "Consumer Services",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "DOMS",
       "yahoo": "DOMS.NS",
       "name": "DOMS Industries Ltd.",
@@ -935,10 +1357,31 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "DRREDDY",
+      "yahoo": "DRREDDY.NS",
+      "name": "Dr. Reddy's Laboratories Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "DYNAMATECH",
       "yahoo": "DYNAMATECH.NS",
       "name": "Dynamatic Technologies Ltd.",
       "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "E2E",
+      "yahoo": "E2E.NS",
+      "name": "E2E NETWORKS Ltd.",
+      "industry": "Information Technology",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "EBGNG",
+      "yahoo": "EBGNG.NS",
+      "name": "GNG Electronics Ltd.",
+      "industry": "Information Technology",
       "band": "Microcap250"
     },
     {
@@ -954,6 +1397,13 @@
       "name": "Edelweiss Financial Services Ltd.",
       "industry": "Financial Services",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "EICHERMOT",
+      "yahoo": "EICHERMOT.NS",
+      "name": "Eicher Motors Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
     },
     {
       "symbol": "EIDPARRY",
@@ -1012,6 +1462,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "EMBASSY",
+      "yahoo": "EMBASSY.NS",
+      "name": "EMBASSY OFFICE PARKS REIT",
+      "industry": "Realty",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "EMBDL",
       "yahoo": "EMBDL.NS",
       "name": "Embassy Developments Ltd.",
@@ -1040,11 +1497,25 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "ENDURANCE",
+      "yahoo": "ENDURANCE.NS",
+      "name": "Endurance Technologies Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "ENGINERSIN",
       "yahoo": "ENGINERSIN.NS",
       "name": "Engineers India Ltd.",
       "industry": "Construction",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "ENRIN",
+      "yahoo": "ENRIN.NS",
+      "name": "Siemens Energy India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
     },
     {
       "symbol": "ENTERO",
@@ -1072,28 +1543,42 @@
       "yahoo": "ERIS.NS",
       "name": "Eris Lifesciences Ltd.",
       "industry": "Healthcare",
-      "band": "Smallcap250"
-    },
-    {
-      "symbol": "ETHOSLTD",
-      "yahoo": "ETHOSLTD.NS",
-      "name": "Ethos Ltd.",
-      "industry": "Consumer Durables",
       "band": "Microcap250"
     },
     {
-      "symbol": "EUREKAFORB",
-      "yahoo": "EUREKAFORB.NS",
-      "name": "Eureka Forbes Ltd.",
-      "industry": "Consumer Durables",
-      "band": "Microcap250"
+      "symbol": "ESCORTS",
+      "yahoo": "ESCORTS.NS",
+      "name": "Escorts Kubota Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "ETERNAL",
+      "yahoo": "ETERNAL.NS",
+      "name": "Eternal Ltd.",
+      "industry": "Consumer Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "EXIDEIND",
+      "yahoo": "EXIDEIND.NS",
+      "name": "Exide Industries Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
     },
     {
       "symbol": "FACT",
       "yahoo": "FACT.NS",
       "name": "Fertilisers and Chemicals Travancore Ltd.",
       "industry": "Chemicals",
-      "band": "Smallcap250"
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "FEDERALBNK",
+      "yahoo": "FEDERALBNK.NS",
+      "name": "Federal Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "FEDFINA",
@@ -1138,10 +1623,31 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "FLUOROCHEM",
+      "yahoo": "FLUOROCHEM.NS",
+      "name": "Gujarat Fluorochemicals Ltd.",
+      "industry": "Chemicals",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "FORCEMOT",
       "yahoo": "FORCEMOT.NS",
       "name": "Force Motors Ltd.",
       "industry": "Automobile and Auto Components",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "FORTIS",
+      "yahoo": "FORTIS.NS",
+      "name": "Fortis Healthcare Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "FRACTAL",
+      "yahoo": "FRACTAL.NS",
+      "name": "Fractal Analytics Ltd.",
+      "industry": "Information Technology",
       "band": "Smallcap250"
     },
     {
@@ -1166,11 +1672,25 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "GAIL",
+      "yahoo": "GAIL.NS",
+      "name": "GAIL (India) Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "GALLANTT",
       "yahoo": "GALLANTT.NS",
       "name": "Gallantt Ispat Ltd.",
       "industry": "Capital Goods",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "GENUSPOWER",
+      "yahoo": "GENUSPOWER.NS",
+      "name": "Genus Power Infrastructures Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
     },
     {
       "symbol": "GESHIP",
@@ -1180,11 +1700,11 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "GHCL",
-      "yahoo": "GHCL.NS",
-      "name": "GHCL Ltd.",
-      "industry": "Chemicals",
-      "band": "Microcap250"
+      "symbol": "GICRE",
+      "yahoo": "GICRE.NS",
+      "name": "General Insurance Corporation of India",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "GILLETTE",
@@ -1201,6 +1721,20 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "GLAXO",
+      "yahoo": "GLAXO.NS",
+      "name": "Glaxosmithkline Pharmaceuticals Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "GLENMARK",
+      "yahoo": "GLENMARK.NS",
+      "name": "Glenmark Pharmaceuticals Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "GMDCLTD",
       "yahoo": "GMDCLTD.NS",
       "name": "Gujarat Mineral Development Corporation Ltd.",
@@ -1208,11 +1742,11 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "GMMPFAUDLR",
-      "yahoo": "GMMPFAUDLR.NS",
-      "name": "GMM Pfaudler Ltd.",
-      "industry": "Capital Goods",
-      "band": "Microcap250"
+      "symbol": "GMRAIRPORT",
+      "yahoo": "GMRAIRPORT.NS",
+      "name": "GMR Airports Ltd.",
+      "industry": "Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "GMRP&UI",
@@ -1229,11 +1763,11 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "GODIGIT",
-      "yahoo": "GODIGIT.NS",
-      "name": "Go Digit General Insurance Ltd.",
-      "industry": "Financial Services",
-      "band": "Smallcap250"
+      "symbol": "GODFRYPHLP",
+      "yahoo": "GODFRYPHLP.NS",
+      "name": "Godfrey Phillips India Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "GODREJAGRO",
@@ -1241,6 +1775,27 @@
       "name": "Godrej Agrovet Ltd.",
       "industry": "Fast Moving Consumer Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "GODREJCP",
+      "yahoo": "GODREJCP.NS",
+      "name": "Godrej Consumer Products Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "GODREJIND",
+      "yahoo": "GODREJIND.NS",
+      "name": "Godrej Industries Ltd.",
+      "industry": "Diversified",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "GODREJPROP",
+      "yahoo": "GODREJPROP.NS",
+      "name": "Godrej Properties Ltd.",
+      "industry": "Realty",
+      "band": "Midcap150"
     },
     {
       "symbol": "GOKEX",
@@ -1254,6 +1809,13 @@
       "yahoo": "GOKULAGRO.NS",
       "name": "Gokul Agro Resources Ltd.",
       "industry": "Fast Moving Consumer Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "GOLDIAM",
+      "yahoo": "GOLDIAM.NS",
+      "name": "Goldiam International Ltd.",
+      "industry": "Consumer Durables",
       "band": "Microcap250"
     },
     {
@@ -1285,6 +1847,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "GRASIM",
+      "yahoo": "GRASIM.NS",
+      "name": "Grasim Industries Ltd.",
+      "industry": "Construction Materials",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "GRAVITA",
       "yahoo": "GRAVITA.NS",
       "name": "Gravita India Ltd.",
@@ -1304,6 +1873,13 @@
       "name": "Grindwell Norton Ltd.",
       "industry": "Capital Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "GROWW",
+      "yahoo": "GROWW.NS",
+      "name": "Billionbrains Garage Ventures Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "GRSE",
@@ -1327,11 +1903,46 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "GUJALKALI",
+      "yahoo": "GUJALKALI.NS",
+      "name": "Gujarat Alkalies & Chemicals Ltd.",
+      "industry": "Chemicals",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "GVT&D",
+      "yahoo": "GVT&D.NS",
+      "name": "GE Vernova T&D India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "HAL",
+      "yahoo": "HAL.NS",
+      "name": "Hindustan Aeronautics Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "HAPPSTMNDS",
       "yahoo": "HAPPSTMNDS.NS",
       "name": "Happiest Minds Technologies Ltd.",
       "industry": "Information Technology",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "HAPPYFORGE",
+      "yahoo": "HAPPYFORGE.NS",
+      "name": "Happy Forgings Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "HAVELLS",
+      "yahoo": "HAVELLS.NS",
+      "name": "Havells India Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
     },
     {
       "symbol": "HBLENGINE",
@@ -1355,6 +1966,41 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "HCLTECH",
+      "yahoo": "HCLTECH.NS",
+      "name": "HCL Technologies Ltd.",
+      "industry": "Information Technology",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "HDBFS",
+      "yahoo": "HDBFS.NS",
+      "name": "HDB Financial Services Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "HDFCAMC",
+      "yahoo": "HDFCAMC.NS",
+      "name": "HDFC Asset Management Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "HDFCBANK",
+      "yahoo": "HDFCBANK.NS",
+      "name": "HDFC Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "HDFCLIFE",
+      "yahoo": "HDFCLIFE.NS",
+      "name": "HDFC Life Insurance Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "HEGAM",
       "yahoo": "HEGAM.NS",
       "name": "HEG Advanced Materials Ltd.",
@@ -1362,18 +2008,25 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "HEMIPROP",
-      "yahoo": "HEMIPROP.NS",
-      "name": "Hemisphere Properties India Ltd.",
-      "industry": "Services",
-      "band": "Microcap250"
-    },
-    {
       "symbol": "HERITGFOOD",
       "yahoo": "HERITGFOOD.NS",
       "name": "Heritage Foods Ltd.",
       "industry": "Fast Moving Consumer Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "HEROMOTOCO",
+      "yahoo": "HEROMOTOCO.NS",
+      "name": "Hero MotoCorp Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "HEXT",
+      "yahoo": "HEXT.NS",
+      "name": "Hexaware Technologies Ltd.",
+      "industry": "Information Technology",
+      "band": "Midcap150"
     },
     {
       "symbol": "HFCL",
@@ -1390,11 +2043,39 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "HINDALCO",
+      "yahoo": "HINDALCO.NS",
+      "name": "Hindalco Industries Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "HINDCOPPER",
       "yahoo": "HINDCOPPER.NS",
       "name": "Hindustan Copper Ltd.",
       "industry": "Metals & Mining",
-      "band": "Smallcap250"
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "HINDPETRO",
+      "yahoo": "HINDPETRO.NS",
+      "name": "Hindustan Petroleum Corporation Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "HINDUNILVR",
+      "yahoo": "HINDUNILVR.NS",
+      "name": "Hindustan Unilever Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "HINDZINC",
+      "yahoo": "HINDZINC.NS",
+      "name": "Hindustan Zinc Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
     },
     {
       "symbol": "HOMEFIRST",
@@ -1411,11 +2092,60 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "HONAUT",
+      "yahoo": "HONAUT.NS",
+      "name": "Honeywell Automation India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Smallcap250"
+    },
+    {
       "symbol": "HSCL",
       "yahoo": "HSCL.NS",
       "name": "Himadri Speciality Chemical Ltd.",
       "industry": "Chemicals",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "HUDCO",
+      "yahoo": "HUDCO.NS",
+      "name": "Housing & Urban Development Corporation Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "HYUNDAI",
+      "yahoo": "HYUNDAI.NS",
+      "name": "Hyundai Motor India Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ICICIAMC",
+      "yahoo": "ICICIAMC.NS",
+      "name": "ICICI Prudential Asset Management Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "ICICIBANK",
+      "yahoo": "ICICIBANK.NS",
+      "name": "ICICI Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ICICIGI",
+      "yahoo": "ICICIGI.NS",
+      "name": "ICICI Lombard General Insurance Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "ICICIPRULI",
+      "yahoo": "ICICIPRULI.NS",
+      "name": "ICICI Prudential Life Insurance Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "ICIL",
@@ -1430,6 +2160,20 @@
       "name": "IDBI Bank Ltd.",
       "industry": "Financial Services",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "IDEA",
+      "yahoo": "IDEA.NS",
+      "name": "Vodafone Idea Ltd.",
+      "industry": "Telecommunication",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "IDFCFIRSTB",
+      "yahoo": "IDFCFIRSTB.NS",
+      "name": "IDFC First Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "IEX",
@@ -1499,7 +2243,14 @@
       "yahoo": "INDGN.NS",
       "name": "Indegene Ltd.",
       "industry": "Healthcare",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "INDHOTEL",
+      "yahoo": "INDHOTEL.NS",
+      "name": "Indian Hotels Co. Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "INDIACEM",
@@ -1523,11 +2274,18 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "INDIASHLTR",
-      "yahoo": "INDIASHLTR.NS",
-      "name": "India Shelter Finance Corporation Ltd.",
+      "symbol": "INDIANB",
+      "yahoo": "INDIANB.NS",
+      "name": "Indian Bank",
       "industry": "Financial Services",
-      "band": "Microcap250"
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "INDIGO",
+      "yahoo": "INDIGO.NS",
+      "name": "InterGlobe Aviation Ltd.",
+      "industry": "Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "INDIGOPNTS",
@@ -1537,18 +2295,32 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "INOXGREEN",
-      "yahoo": "INOXGREEN.NS",
-      "name": "Inox Green Energy Services Ltd.",
-      "industry": "Services",
-      "band": "Microcap250"
+      "symbol": "INDUSINDBK",
+      "yahoo": "INDUSINDBK.NS",
+      "name": "IndusInd Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "INDUSTOWER",
+      "yahoo": "INDUSTOWER.NS",
+      "name": "Indus Towers Ltd.",
+      "industry": "Telecommunication",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "INFY",
+      "yahoo": "INFY.NS",
+      "name": "Infosys Ltd.",
+      "industry": "Information Technology",
+      "band": "Nifty100"
     },
     {
       "symbol": "INOXINDIA",
       "yahoo": "INOXINDIA.NS",
       "name": "INOX India Ltd.",
       "industry": "Capital Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "INOXWIND",
@@ -1569,7 +2341,14 @@
       "yahoo": "IOB.NS",
       "name": "Indian Overseas Bank",
       "industry": "Financial Services",
-      "band": "Smallcap250"
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "IOC",
+      "yahoo": "IOC.NS",
+      "name": "Indian Oil Corporation Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Nifty100"
     },
     {
       "symbol": "IONEXCHANG",
@@ -1577,6 +2356,13 @@
       "name": "Ion Exchange (India) Ltd.",
       "industry": "Utilities",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "IPCALAB",
+      "yahoo": "IPCALAB.NS",
+      "name": "Ipca Laboratories Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "IRB",
@@ -1591,6 +2377,41 @@
       "name": "IRCON International Ltd.",
       "industry": "Construction",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "IRCTC",
+      "yahoo": "IRCTC.NS",
+      "name": "Indian Railway Catering And Tourism Corporation Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "IREDA",
+      "yahoo": "IREDA.NS",
+      "name": "Indian Renewable Energy Development Agency Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "IRFC",
+      "yahoo": "IRFC.NS",
+      "name": "Indian Railway Finance Corporation Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ITC",
+      "yahoo": "ITC.NS",
+      "name": "ITC Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "ITCHOTELS",
+      "yahoo": "ITCHOTELS.NS",
+      "name": "ITC Hotels Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "ITI",
@@ -1656,11 +2477,25 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "JKLAKSHMI",
-      "yahoo": "JKLAKSHMI.NS",
-      "name": "JK Lakshmi Cement Ltd.",
+      "symbol": "JINDALSTEL",
+      "yahoo": "JINDALSTEL.NS",
+      "name": "Jindal Steel Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "JIOFIN",
+      "yahoo": "JIOFIN.NS",
+      "name": "Jio Financial Services Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "JKCEMENT",
+      "yahoo": "JKCEMENT.NS",
+      "name": "J.K. Cement Ltd.",
       "industry": "Construction Materials",
-      "band": "Microcap250"
+      "band": "Midcap150"
     },
     {
       "symbol": "JKPAPER",
@@ -1675,13 +2510,6 @@
       "name": "JK Tyre & Industries Ltd.",
       "industry": "Automobile and Auto Components",
       "band": "Smallcap250"
-    },
-    {
-      "symbol": "JLHL",
-      "yahoo": "JLHL.NS",
-      "name": "Jupiter Life Line Hospitals Ltd.",
-      "industry": "Healthcare",
-      "band": "Microcap250"
     },
     {
       "symbol": "JMFINANCIL",
@@ -1705,6 +2533,13 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "JSL",
+      "yahoo": "JSL.NS",
+      "name": "Jindal Stainless Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "JSLL",
       "yahoo": "JSLL.NS",
       "name": "Jeena Sikho Lifecare Ltd.",
@@ -1719,11 +2554,32 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "JSWDULUX",
-      "yahoo": "JSWDULUX.NS",
-      "name": "JSW Dulux Ltd.",
-      "industry": "Consumer Durables",
-      "band": "Smallcap250"
+      "symbol": "JSWENERGY",
+      "yahoo": "JSWENERGY.NS",
+      "name": "JSW Energy Ltd.",
+      "industry": "Power",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "JSWINFRA",
+      "yahoo": "JSWINFRA.NS",
+      "name": "JSW Infrastructure Ltd.",
+      "industry": "Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "JSWSTEEL",
+      "yahoo": "JSWSTEEL.NS",
+      "name": "JSW Steel Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "JUBLFOOD",
+      "yahoo": "JUBLFOOD.NS",
+      "name": "Jubilant Foodworks Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "JUBLINGREA",
@@ -1737,7 +2593,7 @@
       "yahoo": "JUBLPHARMA.NS",
       "name": "Jubilant Pharmova Ltd.",
       "industry": "Healthcare",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "JUSTDIAL",
@@ -1775,6 +2631,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "KALYANKJIL",
+      "yahoo": "KALYANKJIL.NS",
+      "name": "Kalyan Jewellers India Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "KANSAINER",
       "yahoo": "KANSAINER.NS",
       "name": "Kansai Nerolac Paints Ltd.",
@@ -1803,6 +2666,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "KEI",
+      "yahoo": "KEI.NS",
+      "name": "KEI Industries Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "KFINTECH",
       "yahoo": "KFINTECH.NS",
       "name": "Kfin Technologies Ltd.",
@@ -1821,7 +2691,7 @@
       "yahoo": "KIRLOSBROS.NS",
       "name": "Kirloskar Brothers Ltd.",
       "industry": "Capital Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "KIRLOSENG",
@@ -1838,10 +2708,24 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "KISSHT",
+      "yahoo": "KISSHT.NS",
+      "name": "OnEMI Technology Solutions Ltd.",
+      "industry": "Financial Services",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "KITEX",
       "yahoo": "KITEX.NS",
       "name": "Kitex Garments Ltd.",
       "industry": "Textiles",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "KMEW",
+      "yahoo": "KMEW.NS",
+      "name": "Knowledge Marine & Engineering Works Ltd.",
+      "industry": "Services",
       "band": "Microcap250"
     },
     {
@@ -1850,6 +2734,13 @@
       "name": "KNR Constructions Ltd.",
       "industry": "Construction",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "yahoo": "KOTAKBANK.NS",
+      "name": "Kotak Mahindra Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "KPIGREEN",
@@ -1864,6 +2755,20 @@
       "name": "Kalpataru Projects International Ltd.",
       "industry": "Construction",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "KPITTECH",
+      "yahoo": "KPITTECH.NS",
+      "name": "KPIT Technologies Ltd.",
+      "industry": "Information Technology",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "KPRMILL",
+      "yahoo": "KPRMILL.NS",
+      "name": "K.P.R. Mill Ltd.",
+      "industry": "Textiles",
+      "band": "Midcap150"
     },
     {
       "symbol": "KRBL",
@@ -1884,7 +2789,7 @@
       "yahoo": "KSB.NS",
       "name": "KSB Ltd.",
       "industry": "Capital Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "KSCL",
@@ -1901,6 +2806,13 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "KWIL",
+      "yahoo": "KWIL.NS",
+      "name": "Kwality Wall's (India) Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "LALPATHLAB",
       "yahoo": "LALPATHLAB.NS",
       "name": "Dr. Lal Path Labs Ltd.",
@@ -1912,7 +2824,14 @@
       "yahoo": "LATENTVIEW.NS",
       "name": "Latent View Analytics Ltd.",
       "industry": "Information Technology",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "LAURUSLABS",
+      "yahoo": "LAURUSLABS.NS",
+      "name": "Laurus Labs Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "LEMONTREE",
@@ -1920,6 +2839,41 @@
       "name": "Lemon Tree Hotels Ltd.",
       "industry": "Consumer Services",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "LENSKART",
+      "yahoo": "LENSKART.NS",
+      "name": "Lenskart Solutions Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "LGEINDIA",
+      "yahoo": "LGEINDIA.NS",
+      "name": "LG Electronics India Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "LICHSGFIN",
+      "yahoo": "LICHSGFIN.NS",
+      "name": "LIC Housing Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "LICI",
+      "yahoo": "LICI.NS",
+      "name": "Life Insurance Corporation of India",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "LINDEINDIA",
+      "yahoo": "LINDEINDIA.NS",
+      "name": "Linde India Ltd.",
+      "industry": "Chemicals",
+      "band": "Midcap150"
     },
     {
       "symbol": "LLOYDSENGG",
@@ -1936,11 +2890,39 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "LLOYDSME",
+      "yahoo": "LLOYDSME.NS",
+      "name": "Lloyds Metals And Energy Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "LODHA",
+      "yahoo": "LODHA.NS",
+      "name": "Lodha Developers Ltd.",
+      "industry": "Realty",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "LOTUSDEV",
       "yahoo": "LOTUSDEV.NS",
       "name": "SRI LOTUS DEVELOPERS AND REALTY Ltd.",
       "industry": "Realty",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "LT",
+      "yahoo": "LT.NS",
+      "name": "Larsen & Toubro Ltd.",
+      "industry": "Construction",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "LTF",
+      "yahoo": "LTF.NS",
+      "name": "L&T Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "LTFOODS",
@@ -1950,11 +2932,39 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "LTM",
+      "yahoo": "LTM.NS",
+      "name": "LTM Ltd.",
+      "industry": "Information Technology",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "LTTS",
+      "yahoo": "LTTS.NS",
+      "name": "L&T Technology Services Ltd.",
+      "industry": "Information Technology",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "LUMAXIND",
+      "yahoo": "LUMAXIND.NS",
+      "name": "Lumax Industries Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "LUMAXTECH",
       "yahoo": "LUMAXTECH.NS",
       "name": "Lumax Auto Technologies Ltd.",
       "industry": "Automobile and Auto Components",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "LUPIN",
+      "yahoo": "LUPIN.NS",
+      "name": "Lupin Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "LXCHEM",
@@ -1964,18 +2974,25 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "MAHSCOOTER",
-      "yahoo": "MAHSCOOTER.NS",
-      "name": "Maharashtra Scooters Ltd.",
-      "industry": "Financial Services",
-      "band": "Microcap250"
+      "symbol": "M&M",
+      "yahoo": "M&M.NS",
+      "name": "Mahindra & Mahindra Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
     },
     {
-      "symbol": "MAHSEAMLES",
-      "yahoo": "MAHSEAMLES.NS",
-      "name": "Maharashtra Seamless Ltd.",
-      "industry": "Capital Goods",
-      "band": "Microcap250"
+      "symbol": "M&MFIN",
+      "yahoo": "M&MFIN.NS",
+      "name": "Mahindra & Mahindra Financial Services Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "MAHABANK",
+      "yahoo": "MAHABANK.NS",
+      "name": "Bank of Maharashtra",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "MANAPPURAM",
@@ -1983,6 +3000,13 @@
       "name": "Manappuram Finance Ltd.",
       "industry": "Financial Services",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "MANKIND",
+      "yahoo": "MANKIND.NS",
+      "name": "Mankind Pharma Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "MANORAMA",
@@ -2003,7 +3027,14 @@
       "yahoo": "MAPMYINDIA.NS",
       "name": "C.E. Info Systems Ltd.",
       "industry": "Information Technology",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "MARICO",
+      "yahoo": "MARICO.NS",
+      "name": "Marico Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "MARKSANS",
@@ -2013,11 +3044,53 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "MARUTI",
+      "yahoo": "MARUTI.NS",
+      "name": "Maruti Suzuki India Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "MASTEK",
       "yahoo": "MASTEK.NS",
       "name": "Mastek Ltd.",
       "industry": "Information Technology",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "MAXHEALTH",
+      "yahoo": "MAXHEALTH.NS",
+      "name": "Max Healthcare Institute Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "MAZDOCK",
+      "yahoo": "MAZDOCK.NS",
+      "name": "Mazagoan Dock Shipbuilders Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "MBAPL",
+      "yahoo": "MBAPL.NS",
+      "name": "Madhya Bharat Agro Products Ltd.",
+      "industry": "Chemicals",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "MCX",
+      "yahoo": "MCX.NS",
+      "name": "Multi Commodity Exchange of India Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "MEDANTA",
+      "yahoo": "MEDANTA.NS",
+      "name": "Global Health Ltd.",
+      "industry": "Healthcare",
+      "band": "Midcap150"
     },
     {
       "symbol": "MEDPLUS",
@@ -2031,7 +3104,7 @@
       "yahoo": "MEESHO.NS",
       "name": "Meesho Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Midcap150"
     },
     {
       "symbol": "METROPOLIS",
@@ -2039,6 +3112,13 @@
       "name": "Metropolis Healthcare Ltd.",
       "industry": "Healthcare",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "MFSL",
+      "yahoo": "MFSL.NS",
+      "name": "Max Financial Services Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "MGL",
@@ -2076,6 +3156,34 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "MOTHERSON",
+      "yahoo": "MOTHERSON.NS",
+      "name": "Samvardhana Motherson International Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "MOTILALOFS",
+      "yahoo": "MOTILALOFS.NS",
+      "name": "Motilal Oswal Financial Services Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "MPHASIS",
+      "yahoo": "MPHASIS.NS",
+      "name": "MphasiS Ltd.",
+      "industry": "Information Technology",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "MRF",
+      "yahoo": "MRF.NS",
+      "name": "MRF Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "MRPL",
       "yahoo": "MRPL.NS",
       "name": "Mangalore Refinery & Petrochemicals Ltd.",
@@ -2101,7 +3209,21 @@
       "yahoo": "MTARTECH.NS",
       "name": "MTAR Technologies Ltd.",
       "industry": "Capital Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "MUTHOOTFIN",
+      "yahoo": "MUTHOOTFIN.NS",
+      "name": "Muthoot Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "NAM-INDIA",
+      "yahoo": "NAM-INDIA.NS",
+      "name": "Nippon Life India Asset Management Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "NATCOPHARM",
@@ -2109,6 +3231,20 @@
       "name": "NATCO Pharma Ltd.",
       "industry": "Healthcare",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "NATIONALUM",
+      "yahoo": "NATIONALUM.NS",
+      "name": "National Aluminium Co. Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "NAUKRI",
+      "yahoo": "NAUKRI.NS",
+      "name": "Info Edge (India) Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "NAVA",
@@ -2153,11 +3289,18 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "NESCO",
-      "yahoo": "NESCO.NS",
-      "name": "NESCO Ltd.",
-      "industry": "Services",
+      "symbol": "NEPHROPLUS",
+      "yahoo": "NEPHROPLUS.NS",
+      "name": "Nephrocare Health Services Ltd.",
+      "industry": "Healthcare",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "NESTLEIND",
+      "yahoo": "NESTLEIND.NS",
+      "name": "Nestle India Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
     },
     {
       "symbol": "NETWEB",
@@ -2185,7 +3328,7 @@
       "yahoo": "NEWGEN.NS",
       "name": "Newgen Software Technologies Ltd.",
       "industry": "Information Technology",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "NFL",
@@ -2199,6 +3342,20 @@
       "yahoo": "NH.NS",
       "name": "Narayana Hrudayalaya Ltd.",
       "industry": "Healthcare",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "NHPC",
+      "yahoo": "NHPC.NS",
+      "name": "NHPC Ltd.",
+      "industry": "Power",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "NIACL",
+      "yahoo": "NIACL.NS",
+      "name": "The New India Assurance Company Ltd.",
+      "industry": "Financial Services",
       "band": "Smallcap250"
     },
     {
@@ -2206,7 +3363,28 @@
       "yahoo": "NIVABUPA.NS",
       "name": "Niva Bupa Health Insurance Company Ltd.",
       "industry": "Financial Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "NLCINDIA",
+      "yahoo": "NLCINDIA.NS",
+      "name": "NLC India Ltd.",
+      "industry": "Power",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "NMDC",
+      "yahoo": "NMDC.NS",
+      "name": "NMDC Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "NORTHARC",
+      "yahoo": "NORTHARC.NS",
+      "name": "Northern Arc Capital Ltd.",
+      "industry": "Financial Services",
+      "band": "Microcap250"
     },
     {
       "symbol": "NSLNISP",
@@ -2214,6 +3392,20 @@
       "name": "NMDC Steel Ltd.",
       "industry": "Metals & Mining",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "NTPC",
+      "yahoo": "NTPC.NS",
+      "name": "NTPC Ltd.",
+      "industry": "Power",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "NTPCGREEN",
+      "yahoo": "NTPCGREEN.NS",
+      "name": "NTPC Green Energy Ltd.",
+      "industry": "Power",
+      "band": "Midcap150"
     },
     {
       "symbol": "NUVAMA",
@@ -2230,6 +3422,34 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "NYKAA",
+      "yahoo": "NYKAA.NS",
+      "name": "FSN E-Commerce Ventures Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "OBEROIRLTY",
+      "yahoo": "OBEROIRLTY.NS",
+      "name": "Oberoi Realty Ltd.",
+      "industry": "Realty",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "OFSS",
+      "yahoo": "OFSS.NS",
+      "name": "Oracle Financial Services Software Ltd.",
+      "industry": "Information Technology",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "OIL",
+      "yahoo": "OIL.NS",
+      "name": "Oil India Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "OLAELEC",
       "yahoo": "OLAELEC.NS",
       "name": "Ola Electric Mobility Ltd.",
@@ -2244,6 +3464,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "OMNI",
+      "yahoo": "OMNI.NS",
+      "name": "Omnitech Engineering Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "ONESOURCE",
       "yahoo": "ONESOURCE.NS",
       "name": "Onesource Specialty Pharma Ltd.",
@@ -2251,31 +3478,31 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "OPTIEMUS",
-      "yahoo": "OPTIEMUS.NS",
-      "name": "Optiemus Infracom Ltd.",
-      "industry": "Telecommunication",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "ORIENTCEM",
-      "yahoo": "ORIENTCEM.NS",
-      "name": "Orient Cement Ltd.",
-      "industry": "Construction Materials",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "ORKLAINDIA",
-      "yahoo": "ORKLAINDIA.NS",
-      "name": "Orkla India Ltd.",
-      "industry": "Fast Moving Consumer Goods",
-      "band": "Microcap250"
+      "symbol": "ONGC",
+      "yahoo": "ONGC.NS",
+      "name": "Oil & Natural Gas Corporation Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Nifty100"
     },
     {
       "symbol": "OSWALPUMPS",
       "yahoo": "OSWALPUMPS.NS",
       "name": "Oswal Pumps Ltd.",
       "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "PAGEIND",
+      "yahoo": "PAGEIND.NS",
+      "name": "Page Industries Ltd.",
+      "industry": "Textiles",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "PAISALO",
+      "yahoo": "PAISALO.NS",
+      "name": "Paisalo Digital Ltd.",
+      "industry": "Financial Services",
       "band": "Microcap250"
     },
     {
@@ -2300,6 +3527,20 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "PATANJALI",
+      "yahoo": "PATANJALI.NS",
+      "name": "Patanjali Foods Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "PAYTM",
+      "yahoo": "PAYTM.NS",
+      "name": "One 97 Communications Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "PCBL",
       "yahoo": "PCBL.NS",
       "name": "PCBL Chemical Ltd.",
@@ -2314,11 +3555,32 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "PFIZER",
-      "yahoo": "PFIZER.NS",
-      "name": "Pfizer Ltd.",
-      "industry": "Healthcare",
-      "band": "Smallcap250"
+      "symbol": "PDSL",
+      "yahoo": "PDSL.NS",
+      "name": "PDS Ltd.",
+      "industry": "Textiles",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "PERSISTENT",
+      "yahoo": "PERSISTENT.NS",
+      "name": "Persistent Systems Ltd.",
+      "industry": "Information Technology",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "PETRONET",
+      "yahoo": "PETRONET.NS",
+      "name": "Petronet LNG Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "PFC",
+      "yahoo": "PFC.NS",
+      "name": "Power Finance Corporation Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "PFOCUS",
@@ -2335,6 +3597,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "PGHL",
+      "yahoo": "PGHL.NS",
+      "name": "Procter & Gamble Health Ltd.",
+      "industry": "Healthcare",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "PGIL",
       "yahoo": "PGIL.NS",
       "name": "Pearl Global Industries Ltd.",
@@ -2342,11 +3611,32 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "PHOENIXLTD",
+      "yahoo": "PHOENIXLTD.NS",
+      "name": "Phoenix Mills Ltd.",
+      "industry": "Realty",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "PICCADIL",
       "yahoo": "PICCADIL.NS",
       "name": "Piccadily Agro Industries Ltd.",
       "industry": "Fast Moving Consumer Goods",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "PIDILITIND",
+      "yahoo": "PIDILITIND.NS",
+      "name": "Pidilite Industries Ltd.",
+      "industry": "Chemicals",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "PIIND",
+      "yahoo": "PIIND.NS",
+      "name": "PI Industries Ltd.",
+      "industry": "Chemicals",
+      "band": "Midcap150"
     },
     {
       "symbol": "PINELABS",
@@ -2360,7 +3650,14 @@
       "yahoo": "PIRAMALFIN.NS",
       "name": "Piramal Finance Ltd.",
       "industry": "Financial Services",
-      "band": "Smallcap250"
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "PNB",
+      "yahoo": "PNB.NS",
+      "name": "Punjab National Bank",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "PNBHOUSING",
@@ -2384,6 +3681,20 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "POLICYBZR",
+      "yahoo": "POLICYBZR.NS",
+      "name": "PB Fintech Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "POLYCAB",
+      "yahoo": "POLYCAB.NS",
+      "name": "Polycab India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "POLYMED",
       "yahoo": "POLYMED.NS",
       "name": "Poly Medicure Ltd.",
@@ -2396,6 +3707,27 @@
       "name": "Poonawalla Fincorp Ltd.",
       "industry": "Financial Services",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "POWERGRID",
+      "yahoo": "POWERGRID.NS",
+      "name": "Power Grid Corporation of India Ltd.",
+      "industry": "Power",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "POWERICA",
+      "yahoo": "POWERICA.NS",
+      "name": "Powerica Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "POWERINDIA",
+      "yahoo": "POWERINDIA.NS",
+      "name": "Hitachi Energy India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
     },
     {
       "symbol": "POWERMECH",
@@ -2419,6 +3751,27 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "PRECWIRE",
+      "yahoo": "PRECWIRE.NS",
+      "name": "Precision Wires India Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "PREMIERENE",
+      "yahoo": "PREMIERENE.NS",
+      "name": "Premier Energies Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "PRESTIGE",
+      "yahoo": "PRESTIGE.NS",
+      "name": "Prestige Estates Projects Ltd.",
+      "industry": "Realty",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "PRICOLLTD",
       "yahoo": "PRICOLLTD.NS",
       "name": "Pricol Ltd.",
@@ -2430,21 +3783,7 @@
       "yahoo": "PRIVISCL.NS",
       "name": "Privi Speciality Chemicals Ltd.",
       "industry": "Chemicals",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "PRSMJOHNSN",
-      "yahoo": "PRSMJOHNSN.NS",
-      "name": "Prism Johnson Ltd.",
-      "industry": "Construction Materials",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "PRUDENT",
-      "yahoo": "PRUDENT.NS",
-      "name": "Prudent Corporate Advisory Services Ltd.",
-      "industry": "Financial Services",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "PTC",
@@ -2494,6 +3833,13 @@
       "name": "Quess Corp Ltd.",
       "industry": "Services",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "RADICO",
+      "yahoo": "RADICO.NS",
+      "name": "Radico Khaitan Ltd",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "RAILTEL",
@@ -2573,18 +3919,18 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "RECLTD",
+      "yahoo": "RECLTD.NS",
+      "name": "REC Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "REDINGTON",
       "yahoo": "REDINGTON.NS",
       "name": "Redington Ltd.",
       "industry": "Services",
       "band": "Smallcap250"
-    },
-    {
-      "symbol": "REDTAPE",
-      "yahoo": "REDTAPE.NS",
-      "name": "Redtape Ltd.",
-      "industry": "Consumer Durables",
-      "band": "Microcap250"
     },
     {
       "symbol": "REFEX",
@@ -2601,6 +3947,13 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "RELIANCE",
+      "yahoo": "RELIANCE.NS",
+      "name": "Reliance Industries Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "RELIGARE",
       "yahoo": "RELIGARE.NS",
       "name": "Religare Enterprises Ltd.",
@@ -2612,6 +3965,13 @@
       "yahoo": "RENUKA.NS",
       "name": "Shree Renuka Sugars Ltd.",
       "industry": "Fast Moving Consumer Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "RESPONIND",
+      "yahoo": "RESPONIND.NS",
+      "name": "Responsive Industries Ltd.",
+      "industry": "Consumer Durables",
       "band": "Microcap250"
     },
     {
@@ -2657,13 +4017,6 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "RTNINDIA",
-      "yahoo": "RTNINDIA.NS",
-      "name": "RattanIndia Enterprises Ltd.",
-      "industry": "Consumer Services",
-      "band": "Microcap250"
-    },
-    {
       "symbol": "RTNPOWER",
       "yahoo": "RTNPOWER.NS",
       "name": "RattanIndia Power Ltd.",
@@ -2675,14 +4028,14 @@
       "yahoo": "RUBICON.NS",
       "name": "Rubicon Research Ltd.",
       "industry": "Healthcare",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
-      "symbol": "SAATVIKGL",
-      "yahoo": "SAATVIKGL.NS",
-      "name": "Saatvik Green Energy Ltd.",
-      "industry": "Capital Goods",
-      "band": "Microcap250"
+      "symbol": "RVNL",
+      "yahoo": "RVNL.NS",
+      "name": "Rail Vikas Nigam Ltd.",
+      "industry": "Construction",
+      "band": "Midcap150"
     },
     {
       "symbol": "SAFARI",
@@ -2697,6 +4050,13 @@
       "name": "Sagility Ltd.",
       "industry": "Information Technology",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "SAIL",
+      "yahoo": "SAIL.NS",
+      "name": "Steel Authority of India Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Midcap150"
     },
     {
       "symbol": "SAILIFE",
@@ -2727,25 +4087,18 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "SANOFICONR",
-      "yahoo": "SANOFICONR.NS",
-      "name": "Sanofi Consumer Healthcare India Ltd.",
-      "industry": "Healthcare",
-      "band": "Microcap250"
-    },
-    {
       "symbol": "SANSERA",
       "yahoo": "SANSERA.NS",
       "name": "Sansera Engineering Ltd.",
       "industry": "Automobile and Auto Components",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "SAPPHIRE",
       "yahoo": "SAPPHIRE.NS",
       "name": "Sapphire Foods India Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "SARDAEN",
@@ -2759,14 +4112,42 @@
       "yahoo": "SAREGAMA.NS",
       "name": "Saregama India Ltd",
       "industry": "Media Entertainment & Publication",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "SBFC",
       "yahoo": "SBFC.NS",
       "name": "SBFC Finance Ltd.",
       "industry": "Financial Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SBICARD",
+      "yahoo": "SBICARD.NS",
+      "name": "SBI Cards and Payment Services Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "SBILIFE",
+      "yahoo": "SBILIFE.NS",
+      "name": "SBI Life Insurance Company Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "SBIN",
+      "yahoo": "SBIN.NS",
+      "name": "State Bank of India",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "SCHAEFFLER",
+      "yahoo": "SCHAEFFLER.NS",
+      "name": "Schaeffler India Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
     },
     {
       "symbol": "SCHNEIDER",
@@ -2783,6 +4164,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "SEDEMAC",
+      "yahoo": "SEDEMAC.NS",
+      "name": "SEDEMAC Mechatronics Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "SENCO",
       "yahoo": "SENCO.NS",
       "name": "Senco Gold Ltd.",
@@ -2790,10 +4178,31 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "SENORES",
+      "yahoo": "SENORES.NS",
+      "name": "Senores Pharmaceuticals Ltd.",
+      "industry": "Healthcare",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "SFL",
       "yahoo": "SFL.NS",
       "name": "Sheela Foam Ltd.",
       "industry": "Consumer Durables",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SGMART",
+      "yahoo": "SGMART.NS",
+      "name": "SG Mart Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SHADOWFAX",
+      "yahoo": "SHADOWFAX.NS",
+      "name": "Shadowfax Technologies Ltd.",
+      "industry": "Services",
       "band": "Microcap250"
     },
     {
@@ -2825,6 +4234,13 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "SHILCTECH",
+      "yahoo": "SHILCTECH.NS",
+      "name": "Shilchar Technologies Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "SHILPAMED",
       "yahoo": "SHILPAMED.NS",
       "name": "Shilpa Medicare Ltd.",
@@ -2832,11 +4248,32 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "SHREECEM",
+      "yahoo": "SHREECEM.NS",
+      "name": "Shree Cement Ltd.",
+      "industry": "Construction Materials",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "SHREEJISPG",
+      "yahoo": "SHREEJISPG.NS",
+      "name": "Shreeji Shipping Global Ltd.",
+      "industry": "Services",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "SHRIPISTON",
       "yahoo": "SHRIPISTON.NS",
       "name": "SPR Auto Technologies Ltd.",
       "industry": "Automobile and Auto Components",
-      "band": "Microcap250"
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "SHRIRAMFIN",
+      "yahoo": "SHRIRAMFIN.NS",
+      "name": "Shriram Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
     },
     {
       "symbol": "SHYAMMETL",
@@ -2846,6 +4283,20 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "SIEMENS",
+      "yahoo": "SIEMENS.NS",
+      "name": "Siemens Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "SIGMAADV",
+      "yahoo": "SIGMAADV.NS",
+      "name": "SIGMA ADVANCED SYSTEMS LTD.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
       "symbol": "SIGNATURE",
       "yahoo": "SIGNATURE.NS",
       "name": "Signatureglobal (India) Ltd.",
@@ -2853,18 +4304,18 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "SKFINDIA",
-      "yahoo": "SKFINDIA.NS",
-      "name": "SKF India Ltd.",
+      "symbol": "SJS",
+      "yahoo": "SJS.NS",
+      "name": "S.J.S. Enterprises Ltd.",
       "industry": "Automobile and Auto Components",
       "band": "Microcap250"
     },
     {
-      "symbol": "SKFINDUS",
-      "yahoo": "SKFINDUS.NS",
-      "name": "SKF India (Industrial) Ltd.",
-      "industry": "Capital Goods",
-      "band": "Microcap250"
+      "symbol": "SJVN",
+      "yahoo": "SJVN.NS",
+      "name": "SJVN Ltd.",
+      "industry": "Power",
+      "band": "Smallcap250"
     },
     {
       "symbol": "SKIPPER",
@@ -2878,13 +4329,6 @@
       "yahoo": "SKYGOLD.NS",
       "name": "SKY GOLD AND DIAMONDS Ltd.",
       "industry": "Consumer Durables",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "SMARTWORKS",
-      "yahoo": "SMARTWORKS.NS",
-      "name": "Smartworks Coworking Spaces Ltd.",
-      "industry": "Services",
       "band": "Microcap250"
     },
     {
@@ -2902,6 +4346,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "SOLARINDS",
+      "yahoo": "SOLARINDS.NS",
+      "name": "Solar Industries India Ltd.",
+      "industry": "Chemicals",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "SONACOMS",
       "yahoo": "SONACOMS.NS",
       "name": "Sona BLW Precision Forgings Ltd.",
@@ -2913,7 +4364,7 @@
       "yahoo": "SONATSOFTW.NS",
       "name": "Sonata Software Ltd.",
       "industry": "Information Technology",
-      "band": "Smallcap250"
+      "band": "Microcap250"
     },
     {
       "symbol": "SOUTHBANK",
@@ -2934,20 +4385,20 @@
       "yahoo": "SPLPETRO.NS",
       "name": "Supreme Petrochem Ltd.",
       "industry": "Chemicals",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SRF",
+      "yahoo": "SRF.NS",
+      "name": "SRF Ltd.",
+      "industry": "Chemicals",
+      "band": "Midcap150"
     },
     {
       "symbol": "STAR",
       "yahoo": "STAR.NS",
       "name": "Strides Pharma Science Ltd.",
       "industry": "Healthcare",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "STARCEMENT",
-      "yahoo": "STARCEMENT.NS",
-      "name": "Star Cement Ltd.",
-      "industry": "Construction Materials",
       "band": "Microcap250"
     },
     {
@@ -2962,20 +4413,13 @@
       "yahoo": "STLTECH.NS",
       "name": "Sterlite Technologies Ltd.",
       "industry": "Telecommunication",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
-      "symbol": "STYL",
-      "yahoo": "STYL.NS",
-      "name": "Seshaasai Technologies Ltd.",
-      "industry": "Financial Services",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "STYRENIX",
-      "yahoo": "STYRENIX.NS",
-      "name": "Styrenix Performance Materials Ltd.",
-      "industry": "Chemicals",
+      "symbol": "STYLAMIND",
+      "yahoo": "STYLAMIND.NS",
+      "name": "Stylam Industries Ltd.",
+      "industry": "Consumer Durables",
       "band": "Microcap250"
     },
     {
@@ -3007,6 +4451,34 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "SUNDARMFIN",
+      "yahoo": "SUNDARMFIN.NS",
+      "name": "Sundaram Finance Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "SUNDRMFAST",
+      "yahoo": "SUNDRMFAST.NS",
+      "name": "Sundram Fasteners Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SUNFLAG",
+      "yahoo": "SUNFLAG.NS",
+      "name": "Sunflag Iron & Steel Company Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "yahoo": "SUNPHARMA.NS",
+      "name": "Sun Pharmaceutical Industries Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "SUNTECK",
       "yahoo": "SUNTECK.NS",
       "name": "Sunteck Realty Ltd.",
@@ -3019,6 +4491,13 @@
       "name": "Sun TV Network Ltd.",
       "industry": "Media Entertainment & Publication",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "SUPREMEIND",
+      "yahoo": "SUPREMEIND.NS",
+      "name": "Supreme Industries Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "SUPRIYA",
@@ -3035,11 +4514,32 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "SUVEN",
+      "yahoo": "SUVEN.NS",
+      "name": "Suven Life Sciences Ltd.",
+      "industry": "Healthcare",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "SUZLON",
+      "yahoo": "SUZLON.NS",
+      "name": "Suzlon Energy Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "SWANCORP",
       "yahoo": "SWANCORP.NS",
       "name": "Swan Corp Ltd.",
       "industry": "Chemicals",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "SWIGGY",
+      "yahoo": "SWIGGY.NS",
+      "name": "Swiggy Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "SWSOLAR",
@@ -3084,11 +4584,60 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "TATACAP",
+      "yahoo": "TATACAP.NS",
+      "name": "Tata Capital Ltd.",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "TATACHEM",
       "yahoo": "TATACHEM.NS",
       "name": "Tata Chemicals Ltd.",
       "industry": "Chemicals",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "TATACOMM",
+      "yahoo": "TATACOMM.NS",
+      "name": "Tata Communications Ltd.",
+      "industry": "Telecommunication",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "TATACONSUM",
+      "yahoo": "TATACONSUM.NS",
+      "name": "Tata Consumer Products Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "TATAELXSI",
+      "yahoo": "TATAELXSI.NS",
+      "name": "Tata Elxsi Ltd.",
+      "industry": "Information Technology",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "TATAINVEST",
+      "yahoo": "TATAINVEST.NS",
+      "name": "Tata Investment Corporation Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "TATAPOWER",
+      "yahoo": "TATAPOWER.NS",
+      "name": "Tata Power Co. Ltd.",
+      "industry": "Power",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "TATASTEEL",
+      "yahoo": "TATASTEEL.NS",
+      "name": "Tata Steel Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
     },
     {
       "symbol": "TATATECH",
@@ -3105,11 +4654,25 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "TCS",
+      "yahoo": "TCS.NS",
+      "name": "Tata Consultancy Services Ltd.",
+      "industry": "Information Technology",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "TDPOWERSYS",
       "yahoo": "TDPOWERSYS.NS",
       "name": "TD Power Systems Ltd.",
       "industry": "Capital Goods",
-      "band": "Microcap250"
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "TECHM",
+      "yahoo": "TECHM.NS",
+      "name": "Tech Mahindra Ltd.",
+      "industry": "Information Technology",
+      "band": "Nifty100"
     },
     {
       "symbol": "TECHNOE",
@@ -3151,14 +4714,21 @@
       "yahoo": "THANGAMAYL.NS",
       "name": "Thangamayil Jewellery Ltd.",
       "industry": "Consumer Durables",
-      "band": "Microcap250"
+      "band": "Smallcap250"
     },
     {
       "symbol": "THELEELA",
       "yahoo": "THELEELA.NS",
       "name": "Leela Palaces Hotels & Resorts Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "THERMAX",
+      "yahoo": "THERMAX.NS",
+      "name": "Thermax Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "THOMASCOOK",
@@ -3182,10 +4752,24 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "TIINDIA",
+      "yahoo": "TIINDIA.NS",
+      "name": "Tube Investments of India Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "TIMETECHNO",
       "yahoo": "TIMETECHNO.NS",
       "name": "Time Technoplast Ltd.",
       "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "TIMEX",
+      "yahoo": "TIMEX.NS",
+      "name": "Timex Group India Ltd.",
+      "industry": "Consumer Durables",
       "band": "Microcap250"
     },
     {
@@ -3210,11 +4794,46 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "TITAN",
+      "yahoo": "TITAN.NS",
+      "name": "Titan Company Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "TMB",
       "yahoo": "TMB.NS",
       "name": "Tamilnad Mercantile Bank Ltd.",
       "industry": "Financial Services",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "TMCV",
+      "yahoo": "TMCV.NS",
+      "name": "Tata Motors Ltd.",
+      "industry": "Capital Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "TMPV",
+      "yahoo": "TMPV.NS",
+      "name": "Tata Motors Passenger Vehicles Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "TORNTPHARM",
+      "yahoo": "TORNTPHARM.NS",
+      "name": "Torrent Pharmaceuticals Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "TORNTPOWER",
+      "yahoo": "TORNTPOWER.NS",
+      "name": "Torrent Power Ltd.",
+      "industry": "Power",
+      "band": "Midcap150"
     },
     {
       "symbol": "TRANSRAILL",
@@ -3224,11 +4843,11 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "TRAVELFOOD",
-      "yahoo": "TRAVELFOOD.NS",
-      "name": "Travel Food Services Ltd.",
+      "symbol": "TRENT",
+      "yahoo": "TRENT.NS",
+      "name": "Trent Ltd.",
       "industry": "Consumer Services",
-      "band": "Smallcap250"
+      "band": "Nifty100"
     },
     {
       "symbol": "TRIDENT",
@@ -3245,17 +4864,10 @@
       "band": "Smallcap250"
     },
     {
-      "symbol": "TRIVENI",
-      "yahoo": "TRIVENI.NS",
-      "name": "Triveni Engineering & Industries Ltd.",
-      "industry": "Fast Moving Consumer Goods",
-      "band": "Microcap250"
-    },
-    {
-      "symbol": "TSFINV",
-      "yahoo": "TSFINV.NS",
-      "name": "TSF Investments Ltd.",
-      "industry": "Financial Services",
+      "symbol": "TTKPRESTIG",
+      "yahoo": "TTKPRESTIG.NS",
+      "name": "TTK Prestige Ltd.",
+      "industry": "Consumer Durables",
       "band": "Microcap250"
     },
     {
@@ -3266,11 +4878,25 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "TVSMOTOR",
+      "yahoo": "TVSMOTOR.NS",
+      "name": "TVS Motor Company Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "TVSSCS",
       "yahoo": "TVSSCS.NS",
       "name": "TVS Supply Chain Solutions Ltd.",
       "industry": "Services",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "UBL",
+      "yahoo": "UBL.NS",
+      "name": "United Breweries Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "UCOBANK",
@@ -3285,6 +4911,48 @@
       "name": "Ujjivan Small Finance Bank Ltd.",
       "industry": "Financial Services",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "yahoo": "ULTRACEMCO.NS",
+      "name": "UltraTech Cement Ltd.",
+      "industry": "Construction Materials",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "UNIMECH",
+      "yahoo": "UNIMECH.NS",
+      "name": "Unimech Aerospace and Manufacturing Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
+    },
+    {
+      "symbol": "UNIONBANK",
+      "yahoo": "UNIONBANK.NS",
+      "name": "Union Bank of India",
+      "industry": "Financial Services",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "UNITDSPR",
+      "yahoo": "UNITDSPR.NS",
+      "name": "United Spirits Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "UNOMINDA",
+      "yahoo": "UNOMINDA.NS",
+      "name": "UNO Minda Ltd.",
+      "industry": "Automobile and Auto Components",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "UPL",
+      "yahoo": "UPL.NS",
+      "name": "UPL Ltd.",
+      "industry": "Chemicals",
+      "band": "Midcap150"
     },
     {
       "symbol": "URBANCO",
@@ -3329,10 +4997,38 @@
       "band": "Microcap250"
     },
     {
-      "symbol": "VARROC",
-      "yahoo": "VARROC.NS",
-      "name": "Varroc Engineering Ltd.",
-      "industry": "Automobile and Auto Components",
+      "symbol": "VAML",
+      "yahoo": "VAML.NS",
+      "name": "Vedanta Aluminium Metal Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "VBL",
+      "yahoo": "VBL.NS",
+      "name": "Varun Beverages Ltd.",
+      "industry": "Fast Moving Consumer Goods",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "VEDL",
+      "yahoo": "VEDL.NS",
+      "name": "Vedanta Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Nifty100"
+    },
+    {
+      "symbol": "VEDPOWER",
+      "yahoo": "VEDPOWER.NS",
+      "name": "Vedanta Power Ltd.",
+      "industry": "Power",
+      "band": "Smallcap250"
+    },
+    {
+      "symbol": "VESUVIUS",
+      "yahoo": "VESUVIUS.NS",
+      "name": "Vesuvius India Ltd.",
+      "industry": "Capital Goods",
       "band": "Microcap250"
     },
     {
@@ -3364,6 +5060,13 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "VISL",
+      "yahoo": "VISL.NS",
+      "name": "Vedanta Iron and Steel Ltd.",
+      "industry": "Metals & Mining",
+      "band": "Smallcap250"
+    },
+    {
       "symbol": "VIYASH",
       "yahoo": "VIYASH.NS",
       "name": "Viyash Scientific Ltd.",
@@ -3378,6 +5081,20 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "VMM",
+      "yahoo": "VMM.NS",
+      "name": "Vishal Mega Mart Ltd.",
+      "industry": "Consumer Services",
+      "band": "Midcap150"
+    },
+    {
+      "symbol": "VOGL",
+      "yahoo": "VOGL.NS",
+      "name": "Vedanta Oil and Gas Ltd.",
+      "industry": "Oil Gas & Consumable Fuels",
+      "band": "Smallcap250"
+    },
+    {
       "symbol": "VOLTAMP",
       "yahoo": "VOLTAMP.NS",
       "name": "Voltamp Transformers Ltd",
@@ -3385,11 +5102,25 @@
       "band": "Microcap250"
     },
     {
+      "symbol": "VOLTAS",
+      "yahoo": "VOLTAS.NS",
+      "name": "Voltas Ltd.",
+      "industry": "Consumer Durables",
+      "band": "Midcap150"
+    },
+    {
       "symbol": "VTL",
       "yahoo": "VTL.NS",
       "name": "Vardhman Textiles Ltd.",
       "industry": "Textiles",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "WAAREEENER",
+      "yahoo": "WAAREEENER.NS",
+      "name": "Waaree Energies Ltd.",
+      "industry": "Capital Goods",
+      "band": "Midcap150"
     },
     {
       "symbol": "WAAREERTL",
@@ -3462,6 +5193,13 @@
       "band": "Smallcap250"
     },
     {
+      "symbol": "WIPRO",
+      "yahoo": "WIPRO.NS",
+      "name": "Wipro Ltd.",
+      "industry": "Information Technology",
+      "band": "Nifty100"
+    },
+    {
       "symbol": "WOCKPHARMA",
       "yahoo": "WOCKPHARMA.NS",
       "name": "Wockhardt Ltd.",
@@ -3474,6 +5212,13 @@
       "name": "Yatharth Hospital & Trauma Care Services Ltd.",
       "industry": "Healthcare",
       "band": "Microcap250"
+    },
+    {
+      "symbol": "YESBANK",
+      "yahoo": "YESBANK.NS",
+      "name": "Yes Bank Ltd.",
+      "industry": "Financial Services",
+      "band": "Midcap150"
     },
     {
       "symbol": "ZAGGLE",
@@ -3509,6 +5254,13 @@
       "name": "ZF Commercial Vehicle Control Systems India Ltd.",
       "industry": "Automobile and Auto Components",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "ZYDUSLIFE",
+      "yahoo": "ZYDUSLIFE.NS",
+      "name": "Zydus Lifesciences Ltd.",
+      "industry": "Healthcare",
+      "band": "Nifty100"
     },
     {
       "symbol": "ZYDUSWELL",

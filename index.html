@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EMA Board — NSE 251–750</title>
+<title>EMA Board — NSE 1–750</title>
 <style>
   :root{
     --bg:#0f1115; --panel:#161a22; --panel2:#1c212b; --line:#252b37;
@@ -75,13 +75,12 @@
 <header>
   <div class="title">
     <h1>EMA Board</h1>
-    <span class="sub">NSE ranks 251–750 · Smallcap 250 ∪ Microcap 250</span>
+    <span class="sub">NSE ranks 1–750 · NIFTY Total Market</span>
     <span class="meta" id="meta">loading…</span>
   </div>
   <div class="filters">
     <input type="search" id="q" placeholder="Search symbol or name…" autocomplete="off">
-    <select id="band"><option value="">All bands</option>
-      <option>Smallcap250</option><option>Microcap250</option></select>
+    <select id="band"><option value="">All bands</option></select>
     <select id="ind"><option value="">All industries</option></select>
     <div class="seg" id="side">
       <button data-v="" class="on">Any</button>
@@ -177,6 +176,18 @@ async function load(){
   const cur=$('ind').value;
   $('ind').innerHTML='<option value="">All industries</option>'+
     inds.map(i=>`<option${i===cur?' selected':''}>${i}</option>`).join('');
+
+  // Bands are populated from the data, not hardcoded -- the list was hardcoded
+  // to the two 251-750 bands and went stale the moment ranks 1-250 were added.
+  // Ordered by market-cap rank, not alphabetically: a rank band read in the
+  // order Microcap, Midcap, Nifty100, Smallcap is nonsense.
+  const BAND_ORDER=['Nifty100','Midcap150','Smallcap250','Microcap250'];
+  const bands=[...new Set(ROWS.map(r=>r.band).filter(Boolean))]
+    .sort((a,b)=>{const x=BAND_ORDER.indexOf(a),y=BAND_ORDER.indexOf(b);
+                  return (x<0?99:x)-(y<0?99:y)||String(a).localeCompare(b);});
+  const curB=$('band').value;
+  $('band').innerHTML='<option value="">All bands</option>'+
+    bands.map(b=>`<option${b===curB?' selected':''}>${b}</option>`).join('');
 
   const fresh=sp.counts?.fresh??0, tot=sp.counts?.universe??ROWS.length;
   const bad = tot? (tot-fresh)/tot : 1;

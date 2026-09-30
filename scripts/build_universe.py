@@ -113,15 +113,28 @@ def main() -> int:
     fails = verify_bands(S)
     if fails:
         print("FATAL: NSE index partition no longer holds -- refusing to emit a "
-              "universe that may not be ranks 251-750:", file=sys.stderr)
+              "universe that may not be ranks 1-750:", file=sys.stderr)
         for f in fails:
             print(f"  FAILED: {f}", file=sys.stderr)
         return 3
 
     # Company names + industry, straight from NSE's own CSV.
+    #
+    # 2026-09-30 - extended from ranks 251-750 to the FULL 1-750. The four
+    # lists below are exactly NSE's own partition of the market-cap ranking
+    # (100 + 150 + 250 + 250), and verify_bands() above already asserted that
+    # their union IS the NIFTY Total Market, so widening the board needed no
+    # new source and no new assumption -- only emitting the two lists this
+    # script was already fetching to prove the partition.
+    BANDS = {
+        "nifty100":    "Nifty100",       # ranks   1-100
+        "midcap150":   "Midcap150",      # ranks 101-250
+        "smallcap250": "Smallcap250",    # ranks 251-500
+        "microcap250": "Microcap250",    # ranks 501-750
+    }
     meta: dict[str, dict] = {}
     dummies: list[str] = []
-    for band_name in ("smallcap250", "microcap250"):
+    for band_name in BANDS:
         rows = raw[band_name]
         skey = next(c for c in rows[0] if "Symbol" in c)
         nkey = next((c for c in rows[0] if "Company" in c), None)
@@ -133,8 +146,9 @@ def main() -> int:
             # NSE carries DUMMY* placeholder scrips in its constituent files --
             # corporate-action stubs (demergers etc.), e.g. "Dummy HEG Ltd.",
             # "Dummy India Glycols ltd. 1". They are not tradeable and have no
-            # price history anywhere. Excluding them is what takes the raw list
-            # of 505 down to the 500 REAL names in ranks 251-750.
+            # price history anywhere. All 5 sit in the 251-750 half; Nifty100
+            # and Midcap150 carry none (checked 2026-09-30). Excluding them is
+            # what takes the raw 755 down to the 750 REAL names in ranks 1-750.
             if sym.upper().startswith("DUMMY"):
                 dummies.append(sym)
                 continue
@@ -143,19 +157,22 @@ def main() -> int:
                 "yahoo":    f"{sym}.NS",
                 "name":     (r.get(nkey) or "").strip() if nkey else "",
                 "industry": (r.get(ikey) or "").strip() if ikey else "",
-                "band":     "Smallcap250" if band_name == "smallcap250" else "Microcap250",
+                "band":     BANDS[band_name],
             }
 
     universe = sorted(meta.values(), key=lambda d: d["symbol"])
     out = {
         "generated_at": datetime.now(IST).isoformat(),
-        "definition": "NSE ranks 251-750 by full market cap = NIFTY Smallcap 250 "
-                      "UNION NIFTY Microcap 250",
+        "definition": "NSE ranks 1-750 by full market cap = NIFTY 100 UNION "
+                      "NIFTY Midcap 150 UNION NIFTY Smallcap 250 UNION NIFTY "
+                      "Microcap 250 (== NIFTY Total Market)",
         "partition_verified": True,
         "counts": {
+            "nifty100":         len(S["nifty100"]),
+            "midcap150":        len(S["midcap150"]),
             "smallcap250":      len(S["smallcap250"]),
             "microcap250":      len(S["microcap250"]),
-            "raw_band":         len(S["smallcap250"]) + len(S["microcap250"]),
+            "raw_band":         sum(len(S[b]) for b in BANDS),
             "dummy_excluded":   len(dummies),
             "tradeable_total":  len(universe),
         },
@@ -167,8 +184,8 @@ def main() -> int:
     (DATA / "universe.json").write_text(json.dumps(out, indent=2))
 
     print(f"OK  partition verified (5/5 relations)")
-    print(f"    Smallcap250 {len(S['smallcap250'])} + Microcap250 "
-          f"{len(S['microcap250'])} = {len(S['smallcap250']) + len(S['microcap250'])} raw")
+    print("    " + " + ".join(f"{BANDS[b]} {len(S[b])}" for b in BANDS)
+          + f" = {sum(len(S[b]) for b in BANDS)} raw")
     print(f"    - {len(dummies)} DUMMY placeholder(s): {', '.join(sorted(dummies))}")
     print(f"    = {len(universe)} tradeable names")
     print(f"    wrote {DATA / 'universe.json'}")
