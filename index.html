@@ -69,6 +69,33 @@
   .empty{padding:40px;text-align:center;color:var(--dim)}
   footer{padding:7px 14px;color:var(--dim);font-size:11px;
     border-top:1px solid var(--line);background:var(--panel)}
+
+/* ── cross-board nav ─────────────────────────────────────────────────
+   Six boards, one origin. Before this, clicking through to Rollover,
+   PCR or 44 EMA was a dead end: the buttons vanished and the only way
+   back was the browser's own Back.
+
+   The arrow marks a link that LEAVES the app you are in, so it means the
+   same thing on every board - here everything except this page is a
+   different app, so everything except this page carries one. Colours are
+   layered fallbacks because the three boards use three different variable
+   names for the same four roles. */
+.xnav{ display:flex; align-items:center; gap:4px; flex-wrap:wrap;
+       margin:10px 0 2px; font-family:inherit; }
+.xnav a{ font-size:12px; font-weight:600; letter-spacing:0.05em;
+         text-transform:uppercase; text-decoration:none; padding:5px 10px;
+         border-radius:5px; border:1px solid transparent;
+         color:var(--text-dim, var(--dim, #8a8f9a)); opacity:0.82; }
+.xnav a:hover{ color:var(--text, var(--fg, #e6e8ec)); opacity:1; }
+.xnav a.here{ background:var(--panel, var(--card, #16181d));
+              border-color:var(--border, var(--line, #24272e));
+              color:var(--text, var(--fg, #e6e8ec)); opacity:1; }
+.xnav a.away::after{ content:"\2197"; font-size:10px; margin-left:4px;
+                     vertical-align:1px; opacity:0.7; }
+.xnav a:focus-visible{ outline:2px solid var(--accent, #4c8dff); outline-offset:2px; }
+.xnav-sep{ width:1px; align-self:stretch; margin:2px 6px; min-height:16px;
+           background:var(--border, var(--line, #24272e)); opacity:0.8; }
+@media (max-width:640px){ .xnav-sep{ display:none; } }
 </style>
 </head>
 <body>
@@ -78,6 +105,15 @@
     <span class="sub">NSE ranks 1–750 · NIFTY Total Market</span>
     <span class="meta" id="meta">loading…</span>
   </div>
+  <nav class="xnav">
+    <a href="../nifty-heatmap-web/index.html" class="away">Nifty 50</a>
+    <a href="../nifty-heatmap-web/sectors.html" class="away">F&amp;O Sectors</a>
+    <a href="../nifty-heatmap-web/rrg.html" class="away">RRG</a>
+    <span class="xnav-sep" aria-hidden="true"></span>
+    <a href="../fno-rollover/" class="away">Rollover</a>
+    <a href="../nifty-pcr-tracker/" class="away">PCR</a>
+    <a href="../nifty-ema-board/" class="here" aria-current="page">44 EMA</a>
+  </nav>
   <div class="filters">
     <input type="search" id="q" placeholder="Search symbol or name…" autocomplete="off">
     <select id="band"><option value="">All bands</option></select>
