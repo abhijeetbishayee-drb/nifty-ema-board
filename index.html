@@ -33,6 +33,31 @@
     border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;outline:none}
   input:focus,select:focus{border-color:var(--accent)}
   input[type=search]{min-width:190px}
+  /* Multi-pick filter. A native <select multiple> is a fixed-height list box
+     that needs cmd-click to add a second value and gives no room for the 60+
+     industries here, so this is a button plus a checkbox panel. */
+  .pick{position:relative}
+  .pick>button{background:var(--panel2);color:var(--fg);border:1px solid var(--line);
+    border-radius:6px;padding:5px 24px 5px 8px;font:inherit;font-size:12px;
+    cursor:pointer;text-align:left;min-width:132px;position:relative}
+  .pick>button::after{content:"";position:absolute;right:9px;top:50%;
+    width:5px;height:5px;margin-top:-4px;border-right:1.5px solid var(--dim);
+    border-bottom:1.5px solid var(--dim);transform:rotate(45deg)}
+  .pick>button:hover{border-color:var(--dim)}
+  .pick>button[aria-expanded="true"],.pick>button:focus-visible{border-color:var(--accent)}
+  .pick.on>button{color:var(--accent);border-color:var(--accent)}
+  .pick .menu{position:absolute;z-index:50;top:calc(100% + 4px);left:0;min-width:210px;
+    max-height:300px;overflow:auto;background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:4px;box-shadow:0 10px 26px rgba(0,0,0,.55)}
+  .pick .menu[hidden]{display:none}
+  .pick .menu label{display:flex;align-items:center;gap:8px;padding:5px 8px;
+    border-radius:5px;font-size:12px;cursor:pointer;white-space:nowrap}
+  .pick .menu label:hover{background:var(--panel2)}
+  .pick .menu input{accent-color:var(--accent);width:13px;height:13px;padding:0;margin:0}
+  .pick .menu .clear{display:block;width:100%;background:none;border:0;color:var(--dim);
+    font:inherit;font-size:11px;text-align:left;padding:5px 8px;cursor:pointer;
+    border-bottom:1px solid var(--line);margin-bottom:3px}
+  .pick .menu .clear:hover{color:var(--fg)}
   .seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
   .seg button{background:var(--panel2);color:var(--dim);border:0;padding:5px 10px;
     font:inherit;font-size:12px;cursor:pointer;border-right:1px solid var(--line)}
@@ -116,8 +141,8 @@
   </nav>
   <div class="filters">
     <input type="search" id="q" placeholder="Search symbol or name…" autocomplete="off">
-    <select id="band"><option value="">All bands</option></select>
-    <select id="ind"><option value="">All industries</option></select>
+    <div class="pick" id="band" data-all="All bands" data-unit="bands"></div>
+    <div class="pick" id="ind" data-all="All industries" data-unit="industries"></div>
     <div class="seg" id="side">
       <button data-v="" class="on">Any</button>
       <button data-v="Above">Above 44</button>
@@ -208,10 +233,7 @@ async function load(){
       d52l: (ltp!=null&&r.low52)?+(((ltp-r.low52)/r.low52)*100).toFixed(2):null};
   });
 
-  const inds=[...new Set(ROWS.map(r=>r.industry).filter(Boolean))].sort();
-  const cur=$('ind').value;
-  $('ind').innerHTML='<option value="">All industries</option>'+
-    inds.map(i=>`<option${i===cur?' selected':''}>${i}</option>`).join('');
+  fillPick('ind', [...new Set(ROWS.map(r=>r.industry).filter(Boolean))].sort());
 
   // Bands are populated from the data, not hardcoded -- the list was hardcoded
   // to the two 251-750 bands and went stale the moment ranks 1-250 were added.
@@ -221,9 +243,7 @@ async function load(){
   const bands=[...new Set(ROWS.map(r=>r.band).filter(Boolean))]
     .sort((a,b)=>{const x=BAND_ORDER.indexOf(a),y=BAND_ORDER.indexOf(b);
                   return (x<0?99:x)-(y<0?99:y)||String(a).localeCompare(b);});
-  const curB=$('band').value;
-  $('band').innerHTML='<option value="">All bands</option>'+
-    bands.map(b=>`<option${b===curB?' selected':''}>${b}</option>`).join('');
+  fillPick('band', bands);
 
   const fresh=sp.counts?.fresh??0, tot=sp.counts?.universe??ROWS.length;
   const bad = tot? (tot-fresh)/tot : 1;
@@ -242,7 +262,7 @@ async function load(){
 
 function filtered(){
   const q=$('q').value.trim().toLowerCase();
-  const b=$('band').value, i=$('ind').value;
+  const b=SEL.band, i=SEL.ind;
   const sd=$('side').querySelector('.on').dataset.v;
   const pf=$('pnf').querySelector('.on').dataset.v;
   const md=parseFloat($('maxdist').value);
@@ -250,8 +270,9 @@ function filtered(){
   return ROWS.filter(r=>{
     if(q && !(r.symbol.toLowerCase().includes(q) ||
              (r.name||'').toLowerCase().includes(q))) return false;
-    if(b && r.band!==b) return false;
-    if(i && r.industry!==i) return false;
+    // an empty set means "no filter", never "match nothing"
+    if(b.size && !b.has(r.band)) return false;
+    if(i.size && !i.has(r.industry)) return false;
     if(sd && r.side!==sd) return false;
     if(pf && r.pnf!==pf) return false;
     if(!isNaN(md) && (r.dist44==null || Math.abs(r.dist44)>md)) return false;
@@ -293,13 +314,66 @@ function render(){
   </tr>`).join('');
 }
 
-['q','band','ind','maxdist','minbox','maxbox'].forEach(id=>$(id).oninput=render);
+['q','maxdist','minbox','maxbox'].forEach(id=>$(id).oninput=render);
+
+/* ── multi-pick filters ──────────────────────────────────────────────
+   Bands and industries were single-value <select>s, so "Midcap150 AND
+   Smallcap250" or "Pharma AND Hospitals" could not be asked at all - and
+   a native <select multiple> is a fixed-height list box needing cmd-click,
+   which is worse for 60-odd industries. A button plus a checkbox panel
+   instead, with the selection held in a Set. */
+const SEL={band:new Set(), ind:new Set()};
+
+function fillPick(id, items){
+  const box=$(id), sel=SEL[id];
+  // drop anything the data no longer offers, so a stale pick cannot silently
+  // filter every row away after the universe changes
+  [...sel].forEach(v=>{ if(!items.includes(v)) sel.delete(v); });
+  box.innerHTML =
+    `<button type="button" aria-expanded="false" aria-haspopup="true"></button>`
+    + `<div class="menu" hidden role="group" aria-label="${box.dataset.all}">`
+    + `<button type="button" class="clear">Clear selection</button>`
+    + items.map((v,n)=>`<label><input type="checkbox" value="${escAttr(v)}"`
+        + `${sel.has(v)?' checked':''}><span>${escHtml(v)}</span></label>`).join('')
+    + `</div>`;
+  const btn=box.querySelector('button'), menu=box.querySelector('.menu');
+  btn.onclick=e=>{ e.stopPropagation(); const open=menu.hidden;
+    closePicks(); menu.hidden=!open; btn.setAttribute('aria-expanded', String(open)); };
+  menu.onclick=e=>e.stopPropagation();
+  menu.querySelector('.clear').onclick=()=>{
+    sel.clear(); menu.querySelectorAll('input').forEach(c=>c.checked=false);
+    labelPick(id); render(); };
+  menu.querySelectorAll('input').forEach(c=>c.onchange=()=>{
+    c.checked ? sel.add(c.value) : sel.delete(c.value);
+    labelPick(id); render(); });
+  labelPick(id);
+}
+
+function labelPick(id){
+  const box=$(id), sel=SEL[id], btn=box.querySelector('button');
+  btn.textContent = sel.size===0 ? box.dataset.all
+    : sel.size===1 ? [...sel][0]
+    : `${sel.size} ${box.dataset.unit}`;
+  btn.title = sel.size ? [...sel].join(', ') : box.dataset.all;
+  box.classList.toggle('on', sel.size>0);
+}
+
+function closePicks(){
+  document.querySelectorAll('.pick .menu').forEach(m=>{ m.hidden=true;
+    m.parentElement.querySelector('button').setAttribute('aria-expanded','false'); });
+}
+document.addEventListener('click', closePicks);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePicks(); });
+const escHtml=t=>String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const escAttr=t=>escHtml(t).replace(/"/g,'&quot;');
 ['side','pnf'].forEach(id=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
   $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on'); render();
 }));
 $('reset').onclick=()=>{
-  $('q').value=''; $('band').value=''; $('ind').value=''; $('maxdist').value='';
+  $('q').value=''; $('maxdist').value='';
+  ['band','ind'].forEach(id=>{ SEL[id].clear();
+    $(id).querySelectorAll('input').forEach(c=>c.checked=false); labelPick(id); });
   $('minbox').value=''; $('maxbox').value='';
   ['side','pnf'].forEach(id=>{
     $(id).querySelectorAll('button').forEach((x,n)=>x.classList.toggle('on',n===0));
