@@ -94,7 +94,8 @@
   #pnfwrap[hidden]{display:none}
   #pnfbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;
     box-shadow:0 24px 60px rgba(0,0,0,.6);max-width:min(980px,96vw);
-    max-height:92vh;overflow:auto;padding:14px 16px 12px}
+    max-height:94vh;overflow:auto;padding:14px 16px 12px}
+  #pnfchart svg{display:block;max-width:100%;height:auto}
   #pnfbox h3{margin:0;font-size:14px;display:flex;align-items:baseline;gap:9px}
   #pnfbox h3 .s{font-size:11px;color:var(--dim);font-weight:400;letter-spacing:.03em}
   #pnfbox .scales{display:flex;gap:6px;margin:9px 0 4px}
@@ -108,6 +109,7 @@
   .pnfgrid .gl{stroke:var(--line);stroke-width:.5;opacity:.55}
   .pnfgrid .xx{fill:none;stroke:var(--x);stroke-width:1.7}
   .pnfgrid .oo{fill:none;stroke:var(--o);stroke-width:1.7}
+  .pnfgrid .bar{stroke-linecap:round}
   .pnfgrid .last{opacity:1}
   .pnfgrid .dim{opacity:.55}
   .pnfgrid text{fill:var(--dim);font-size:9px}
@@ -501,14 +503,34 @@ function drawPnf(){
   let lo=Infinity, hi=-Infinity;
   cols.forEach(c=>{ lo=Math.min(lo,c.bottom); hi=Math.max(hi,c.top); });
   const rows=hi-lo+1, n=cols.length;
-  const cw=Math.max(9, Math.min(17, Math.floor(620/n)));
-  const ch=Math.max(7, Math.min(cw, Math.floor(430/rows)));
+
+  /* FIT THE VIEWPORT, both ways. A 0.25% box over a run like SYRMA's
+     1,490 -> 1,820 is ~90 rows; at a fixed 7px box that is a 630px grid in a
+     panel that cannot show it, so the chart scrolled. The cell is now sized
+     from the space actually available and the SAME value is used for width
+     and height, because a PnF box is square - letting them diverge would
+     distort the pattern the chart exists to show. */
   const padL=6, padR=58, padT=8, padB=16;
+  const availW=Math.max(260, Math.min(760, (window.innerWidth||900)-180)) - padL - padR;
+  /* 230 is measured, not guessed: title + scale buttons + caption + padding
+     around the grid comes to ~180px, and the overlay adds 18px top and bottom. */
+  const availH=Math.max(190, Math.min(640, (window.innerHeight||700)-230)) - padT - padB;
+  /* The cell is FRACTIONAL, with only a hair of a floor. An integer floor of
+     2px looks harmless until a name like INDIAGLYCO turns up: 692 boxes in the
+     window, which at 2px is a 1,384px grid that overflows any screen. Scaling
+     to fit has to mean fit. */
+  const cell=Math.max(0.5, Math.min(17, Math.min(availW/n, availH/rows)));
+  const cw=cell, ch=cell;
+  /* Below ~5px an X or an O is a smudge. Rather than draw a smudge, each
+     column becomes one bar over the same boxes: still the true column extent
+     and direction, just without per-box glyphs, and the caption says so. */
+  const glyphs = cell >= 5;
   const W=padL+n*cw+padR, H=padT+rows*ch+padB;
   const y=i=>padT+(hi-i)*ch;                 // high box at the top
 
   let g='';
-  for(let i=lo;i<=hi;i++){
+  const gstep=ch>=5?1:Math.max(1,Math.ceil(5/ch));   // no hairline moire on tiny boxes
+  for(let i=lo;i<=hi;i+=gstep){
     const yy=y(i)+ch/2;
     g+=`<line class="gl" x1="${padL}" y1="${yy.toFixed(1)}" x2="${padL+n*cw}" y2="${yy.toFixed(1)}"/>`;
   }
@@ -520,8 +542,15 @@ function drawPnf(){
       + `${p>=1000?Math.round(p).toLocaleString('en-IN'):p.toFixed(p<100?2:1)}</text>`;
   }
   cols.forEach((c,ci)=>{
-    const x=padL+ci*cw, m=Math.min(cw,ch)*0.34, cx=x+cw/2;
+    const x=padL+ci*cw, m=cell*0.34, cx=x+cw/2;
     const cls=(c.d? 'xx':'oo') + (ci===n-1?' last':' dim');
+    if(!glyphs){
+      const yTop=y(c.top)+ch*0.15, yBot=y(c.bottom)+ch*0.85;   // y() puts the HIGH box on top
+      g += `<line class="${cls} bar" x1="${cx.toFixed(1)}" y1="${yTop.toFixed(1)}" `
+         + `x2="${cx.toFixed(1)}" y2="${Math.max(yBot, yTop+1.5).toFixed(1)}" `
+         + `stroke-width="${Math.max(1.4, cell*0.62).toFixed(1)}"/>`;
+      return;
+    }
     for(let i=c.bottom;i<=c.top;i++){
       const cy=y(i)+ch/2;
       g += c.d
@@ -542,7 +571,8 @@ function drawPnf(){
   host.innerHTML=`<svg class="pnfgrid" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img"
      aria-label="Point and figure chart for ${pnfSym}"><g>${g}</g></svg>`;
   const last=cols[n-1];
-  meta.textContent=`${pct}% × ${ps.reversal} · last ${n} columns`;
+  meta.textContent=`${pct}% × ${ps.reversal} · last ${n} columns · ${rows} boxes`
+    + (glyphs ? '' : ' · bars, too tall for glyphs');
   foot.innerHTML=`Current column <b class="${last.d?'x':'o'}">${last.d?'X — demand':'O — supply'}`
     + `</b>, ${last.top-last.bottom+1} boxes, `
     + `${price(last.bottom).toFixed(2)} to ${price(last.top+1).toFixed(2)}. `
@@ -569,6 +599,7 @@ $('pnfwrap').addEventListener('click', e=>{ if(e.target===$('pnfwrap')) closePnf
 $('pnfscales').querySelectorAll('button').forEach(b=>
   b.onclick=()=>{ pnfScale=b.dataset.s; drawPnf(); });
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePnf(); });
+window.addEventListener('resize', ()=>{ if(!$('pnfwrap').hidden) drawPnf(); });
 
 ['side','pnf','pnfm'].forEach(id=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
   $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
