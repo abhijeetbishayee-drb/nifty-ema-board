@@ -47,6 +47,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 # for why porting a fixed algorithm is safe where duplicating a curated
 # taxonomy would not be.
 import pnf_column                            # noqa: E402
+import corp_actions                          # noqa: E402
 import yfinance as yf                        # noqa: E402
 
 PNF_AVAILABLE = True
@@ -241,9 +242,17 @@ def main() -> int:
     print(f"fetching {len(symbols)} symbols x {HISTORY} daily ...", flush=True)
     frames = fetch_many(symbols, period=HISTORY)
 
+    # REPAIR BEFORE ANYTHING READS A PRICE. An unadjusted corporate action is
+    # not only a PnF problem: INDIAGLYCO's 2026-09-02 demerger cliff ran
+    # through the EMAs and the 52-week range too, so a 44 EMA of 587 was being
+    # published for a stock trading at 260. Verified against NSE, never guessed
+    # from the size of the gap - see scripts/corp_actions.py.
+    fixer = corp_actions.Repairer()
+
     rows, missing = [], []
     for sym in symbols:
         df = frames.get(sym) if isinstance(frames, dict) else None
+        df = fixer.repair_df(sym, df)
         r = build_row(sym, by_sym[sym], df)
         if r is None:
             missing.append(sym)
@@ -261,9 +270,23 @@ def main() -> int:
                 "legend": {"X": "demand", "O": "supply"}},
         "counts": {"universe": len(symbols), "built": len(rows),
                    "missing": len(missing)},
+        "corp_actions": {"repaired": fixer.applied,
+                         "unexplained": [{"symbol": s_, "date": d_, "pct": p_}
+                                         for s_, d_, p_ in fixer.unexplained]},
         "missing": sorted(missing),
         "rows": rows,
     }
+    fixer.save()
+    if fixer.applied:
+        print(f"corporate actions repaired ({len(fixer.applied)}):")
+        for a in fixer.applied:
+            print(f"   {a['symbol']:12} {a['ex_date']}  {a['kind']}"
+                  + (f"  x{a['ratio']}" if a['ratio'] else "  history truncated"))
+    if fixer.unexplained:
+        print(f"large gaps NSE does not explain, left alone ({len(fixer.unexplained)}):")
+        for sym, iso, pc in fixer.unexplained:
+            print(f"   {sym:12} {iso}  {pc:+.1f}%")
+
     charts = {}
     for r in rows:
         c = r.pop("_cols", None)
