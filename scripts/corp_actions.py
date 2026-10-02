@@ -71,6 +71,13 @@ SPLIT_RE = re.compile(r"FROM\s*RS?\.?\s*([\d.]+).*?TO\s*RS?\.?\s*([\d.]+)")
 
 CACHE = Path(__file__).resolve().parent.parent / "data" / "corp_actions.json"
 
+# Bump when the cached SHAPE changes. v1 stored {SYMBOL: PURPOSE}; v2 stores
+# {SYMBOL: [[EX_DT, PURPOSE], ...]} so a forward-dated action can be found.
+# Without this the new code read the old file and died on `for ex, pur in rows`
+# with a bare string - which no local test caught, because every local run used
+# a fresh cache path and never met the artefact CI actually had on disk.
+CACHE_SCHEMA = 2
+
 
 def classify(purpose: str):
     """(kind, ratio) for a gap-making action, else (None, None).
@@ -165,7 +172,12 @@ class Repairer:
         self.unexplained: list[tuple[str, str, float]] = []
         self.applied: list[dict] = []
         try:
-            self.by_day = json.loads(self.path.read_text()).get("by_day", {})
+            blob = json.loads(self.path.read_text())
+            if int(blob.get("schema", 1)) == CACHE_SCHEMA:
+                self.by_day = blob.get("by_day", {})
+            else:
+                print(f"corp-action cache is schema {blob.get('schema', 1)}, "
+                      f"need {CACHE_SCHEMA} - refetching")
         except Exception:
             self.by_day = {}
         self._session = requests.Session()
@@ -205,7 +217,10 @@ class Repairer:
             for sym, rows in self.actions_on(day.isoformat()).items():
                 if sym not in names:
                     continue
-                for ex, pur in rows:
+                for pair in rows:
+                    if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+                        continue
+                    ex, pur = pair
                     try:
                         ex_d = dt.date.fromisoformat(ex)
                     except ValueError:
@@ -217,7 +232,8 @@ class Repairer:
     def save(self):
         self.path.parent.mkdir(exist_ok=True)
         self.path.write_text(json.dumps(
-            {"updated": dt.datetime.now(dt.timezone.utc).isoformat(),
+            {"schema": CACHE_SCHEMA,
+             "updated": dt.datetime.now(dt.timezone.utc).isoformat(),
              "note": "NSE PR corporate actions, keyed by ex-date. {} = asked, "
                      "nothing on that date.",
              "by_day": self.by_day}, separators=(",", ":"), sort_keys=True))
