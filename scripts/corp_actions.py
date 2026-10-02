@@ -76,7 +76,25 @@ CACHE = Path(__file__).resolve().parent.parent / "data" / "corp_actions.json"
 # Without this the new code read the old file and died on `for ex, pur in rows`
 # with a bare string - which no local test caught, because every local run used
 # a fresh cache path and never met the artefact CI actually had on disk.
-CACHE_SCHEMA = 2
+CACHE_SCHEMA = 3
+
+
+def _iso(value: str) -> str | None:
+    """NSE's EX_DT, normalised.
+
+    THE ARCHIVE CHANGED FORMAT. Files from 2026 carry ISO (2026-09-02); older
+    ones carry DD/MM/YYYY (22/05/2025). Comparing the raw string against an ISO
+    date therefore matched only recent actions and silently missed every older
+    one - ABFRL, JSLL, QUESS and STAR are all genuine demergers that were
+    reported as "unexplained" for no reason but punctuation.
+    """
+    v = (value or "").strip()
+    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%b-%Y", "%d-%m-%Y"):
+        try:
+            return dt.datetime.strptime(v, fmt).date().isoformat()
+        except ValueError:
+            continue
+    return None
 
 
 def classify(purpose: str):
@@ -153,8 +171,8 @@ def _pr_actions(day: dt.date, session) -> dict | None:
     out: dict[str, list] = {}
     for row in csv.DictReader(io.StringIO(z.read(name).decode("utf-8", "replace"))):
         sym = (row.get("SYMBOL") or "").strip()
-        ex = (row.get("EX_DT") or "").strip()
-        pur = (row.get("PURPOSE") or "").strip()
+        ex = _iso(row.get("EX_DT"))
+        pur = " ".join((row.get("PURPOSE") or "").split())
         if not sym or not ex or not pur:
             continue
         pair = [ex, pur]
