@@ -149,7 +149,7 @@
       <button data-v="Above">Above 44</button>
       <button data-v="Below">Below 44</button>
     </div>
-    <div class="seg" id="pnf">
+    <div class="seg" id="pnf" title="Filters the 0.25% column (the left PnF pair).">
       <button data-v="" class="on">Any</button>
       <button data-v="X">X demand</button>
       <button data-v="O">O supply</button>
@@ -162,7 +162,7 @@
       –
       <input id="maxchg" type="number" step="0.5" placeholder="max" style="width:58px">
     </label>
-    <label class="count" title="Boxes in the current PnF column: few = a fresh reversal, many = an extended run">PnF boxes
+    <label class="count" title="Boxes in the current 0.25% PnF column: few = a fresh reversal, many = an extended run">PnF boxes
       <input id="minbox" type="number" step="1" min="1" placeholder="min" style="width:58px">
       –
       <input id="maxbox" type="number" step="1" min="1" placeholder="max" style="width:58px">
@@ -192,8 +192,10 @@ const COLS = [
   {k:'ema44',   t:'44 EMA',   type:'n'},
   {k:'dist44',  t:'Dist %',   type:'n'},
   {k:'side',    t:'Side',     type:'s'},
-  {k:'pnf',     t:'PnF Col',  type:'s'},
-  {k:'pnf_boxes',t:'PnF Boxes',type:'n'},
+  {k:'pnf',     t:'PnF Col 0.25%', type:'s', ttl:'Reverses on 0.25% x 3 = a 0.75% move, which is inside a normal daily range: median column life is 2 bars and 48% last a single bar. Read it as a 1-2 day flag.'},
+  {k:'pnf_boxes',t:'PnF Boxes 0.25%',type:'n', ttl:'Reverses on 0.25% x 3 = a 0.75% move, which is inside a normal daily range: median column life is 2 bars and 48% last a single bar. Read it as a 1-2 day flag.'},
+  {k:'pnfm',    t:'PnF Col 1%',   type:'s', ttl:'Reverses on 1% x 3 = a 3% move (the pnf-charts medium preset). Same engine, slower scale -- this is the one to read as a leg rather than a wiggle.'},
+  {k:'pnfm_boxes',t:'PnF Boxes 1%',type:'n', ttl:'Reverses on 1% x 3 = a 3% move (the pnf-charts medium preset). Same engine, slower scale -- this is the one to read as a leg rather than a wiggle.'},
   {k:'ema9',    t:'9',        type:'n'},
   {k:'ema14',   t:'14',       type:'n'},
   {k:'ema25',   t:'25',       type:'n'},
@@ -328,6 +330,8 @@ function render(){
     <td class="${r.side==='Above'?'above':'below'}">${r.side||'—'}</td>
     <td class="${r.pnf==='X'?'x':'o'}">${r.pnf||'—'}</td>
     <td class="${r.pnf==='X'?'x':'o'}">${r.pnf_boxes==null?'—':r.pnf_boxes}</td>
+    <td class="${r.pnfm==='X'?'x':'o'}">${r.pnfm||'—'}</td>
+    <td class="${r.pnfm==='X'?'x':'o'}">${r.pnfm_boxes==null?'—':r.pnfm_boxes}</td>
     <td>${num(r.ema9)}</td><td>${num(r.ema14)}</td><td>${num(r.ema25)}</td>
     <td>${num(r.ema50)}</td><td>${num(r.ema100)}</td><td>${num(r.ema200)}</td>
     <td>${num(r.high52)}</td><td class="below">${pct(r.d52h)}</td>

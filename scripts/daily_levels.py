@@ -56,6 +56,19 @@ IST = timezone(timedelta(hours=5, minutes=30))
 EMA_SPANS = [9, 14, 25, 44, 50, 100, 200]
 PNF_BOX_PCT = pnf_column.BOX_PCT   # 0.25 -- pinned to pnf-charts "short"
 PNF_REVERSAL = pnf_column.REVERSAL # 3    -- daily 0.25% x 3, same as PnF board
+
+# TWO SCALES, NOT ONE
+# -------------------
+# "short" reverses on 0.25% x 3 = 0.75%, which is well inside a normal daily
+# range. Measured over the 216 cached symbols (53,545 columns): MEDIAN COLUMN
+# LIFE IS 2 BARS and 48.3% of columns last a single bar -- so the short column
+# is a 1-2 day flag, not a trend read, and saying only "X demand" oversells it.
+# pnf-charts' own "medium" preset (1% x 3 = 3% reversal) is emitted alongside
+# it so the board can show the fast and slow reading side by side. Both come
+# from the same ported state machine; only (pct, reversal) differ, which is
+# exactly the parameterisation the parity test pins.
+PNF_MED_BOX_PCT = 1.0
+PNF_MED_REVERSAL = 3
 HISTORY = "2y"
 MIN_BARS_FOR_52W = 200           # ~10 months; below this the 52w range is a lie
 
@@ -105,26 +118,29 @@ def fetch_many(symbols: list[str], period: str = HISTORY,
     return out
 
 
-def pnf_col(df: pd.DataFrame, symbol: str) -> dict:
+def pnf_col(df: pd.DataFrame, symbol: str, pct: float = PNF_BOX_PCT,
+            rev: int = PNF_REVERSAL, key: str = "pnf") -> dict:
     """Current PnF column: X = demand, O = supply.
 
-    Same box scale the PnF board draws with, so a name reads identically here
-    and there -- which is the point of pinning the preset rather than choosing
-    one.
+    `pct`/`rev` default to the scale the PnF board draws with, so a name reads
+    identically here and there -- which is the point of pinning the preset
+    rather than choosing one. `key` names the output fields, so the same engine
+    serves both the fast and the slow column with no second code path.
     """
+    null = {key: None, f"{key}_boxes": None}
     if "High" not in df or "Low" not in df:
-        return {"pnf": None, "pnf_boxes": None}
+        return null
     try:
         res = pnf_column.last_column(
             df["High"].astype(float).tolist(),
             df["Low"].astype(float).tolist(),
-            PNF_BOX_PCT, PNF_REVERSAL)
+            pct, rev)
         if res is None:
-            return {"pnf": None, "pnf_boxes": None}
+            return null
         direction, boxes = res
-        return {"pnf": direction, "pnf_boxes": boxes}
+        return {key: direction, f"{key}_boxes": boxes}
     except Exception:
-        return {"pnf": None, "pnf_boxes": None}
+        return null
 
 
 def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
@@ -169,6 +185,8 @@ def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
         row["high52"] = row["low52"] = None
 
     row.update(pnf_col(df, meta["symbol"]))
+    row.update(pnf_col(df, meta["symbol"], PNF_MED_BOX_PCT,
+                       PNF_MED_REVERSAL, "pnfm"))
     return row
 
 
@@ -197,6 +215,8 @@ def main() -> int:
         "ema_spans": EMA_SPANS,
         "pnf": {"available": PNF_AVAILABLE, "box_pct": PNF_BOX_PCT,
                 "reversal": PNF_REVERSAL,
+                "medium_box_pct": PNF_MED_BOX_PCT,
+                "medium_reversal": PNF_MED_REVERSAL,
                 "legend": {"X": "demand", "O": "supply"}},
         "counts": {"universe": len(symbols), "built": len(rows),
                    "missing": len(missing)},

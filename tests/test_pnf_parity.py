@@ -50,6 +50,16 @@ def main() -> int:
         return 1
     print(f"OK    preset matches pnf-charts short = {ref_pct}% x {ref_rev}")
 
+    # The board also emits a slower column. Pin it to pnf-charts' own "medium"
+    # the same way, so a second scale cannot drift unnoticed either.
+    import daily_levels as dl
+    med_pct, med_rev = PRESETS["medium"]
+    if (med_pct, med_rev) != (dl.PNF_MED_BOX_PCT, dl.PNF_MED_REVERSAL):
+        print(f"FAIL  preset drift: pnf-charts medium = ({med_pct}, {med_rev}), "
+              f"board = ({dl.PNF_MED_BOX_PCT}, {dl.PNF_MED_REVERSAL})")
+        return 1
+    print(f"OK    preset matches pnf-charts medium = {med_pct}% x {med_rev}")
+
     # ---- 2. output is identical on real data -------------------------
     cache = PNF_CHARTS / "data" / "ohlc"
     files = sorted(glob.glob(str(cache / "*_2y_1d.csv")))
