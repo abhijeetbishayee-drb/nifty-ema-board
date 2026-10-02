@@ -55,6 +55,11 @@ HEADERS = {"User-Agent": "Mozilla/5.0", "Accept": "*/*"}
 # 25% is rare enough that asking NSE about each one costs a handful of fetches.
 JUMP = 0.25
 
+# Days either side of a gap to look for an NSE action, and how close a ratio
+# has to come to the observed gap before it is believed.
+WINDOW = 5
+RATIO_TOL = 0.08
+
 SKIP_PURPOSE = ("DIV",)
 GAP_KINDS = (
     ("DEMERGER", ("DEMERGER", "SPIN OFF", "SPIN-OFF", "SPINOFF")),
@@ -123,7 +128,12 @@ def _symbol_aliases(session) -> dict[str, set[str]]:
 
 
 def _pr_actions(day: dt.date, session) -> dict | None:
-    """{SYMBOL: PURPOSE} with EX_DT == `day`, or None if the file is missing."""
+    """{SYMBOL: [[EX_DT, PURPOSE], ...]} from one PR file, or None if missing.
+
+    EVERY row is kept, not only the ones whose ex-date is this file's date: a
+    PR file is a FORWARD register, so the file for day D already lists actions
+    dated weeks ahead. That is what makes a misdated gap findable at all.
+    """
     try:
         r = session.get(PR_URL.format(day.strftime("%d%m%y")),
                         headers=HEADERS, timeout=45)
@@ -133,11 +143,16 @@ def _pr_actions(day: dt.date, session) -> dict | None:
         name = next(n for n in z.namelist() if n.lower().startswith("bc"))
     except Exception:
         return None
-    iso = day.isoformat()
-    out = {}
+    out: dict[str, list] = {}
     for row in csv.DictReader(io.StringIO(z.read(name).decode("utf-8", "replace"))):
-        if (row.get("EX_DT") or "").strip() == iso:
-            out.setdefault((row.get("SYMBOL") or "").strip(), row.get("PURPOSE") or "")
+        sym = (row.get("SYMBOL") or "").strip()
+        ex = (row.get("EX_DT") or "").strip()
+        pur = (row.get("PURPOSE") or "").strip()
+        if not sym or not ex or not pur:
+            continue
+        pair = [ex, pur]
+        if pair not in out.setdefault(sym, []):
+            out[sym].append(pair)
     return out
 
 
@@ -155,6 +170,7 @@ class Repairer:
             self.by_day = {}
         self._session = requests.Session()
         self._aliases = _symbol_aliases(self._session)
+        self._split_cache: dict[str, list] = {}
 
     def names_for(self, symbol: str) -> list[str]:
         """Today's symbol first, then anything it used to be called."""
@@ -163,11 +179,40 @@ class Repairer:
     def actions_on(self, iso: str) -> dict:
         if iso not in self.by_day:
             got = _pr_actions(dt.date.fromisoformat(iso), self._session)
-            # None means the archive had nothing for that date (holiday, or not
-            # published). Cached as {} either way so one bad day is not refetched
-            # on every run; a missing file simply explains no gap.
+            # None means the archive had nothing for that date (weekend, holiday
+            # or not published). Cached as {} either way so one bad day is not
+            # refetched every run; a missing file simply explains no gap.
             self.by_day[iso] = got or {}
         return self.by_day[iso]
+
+    def actions_for(self, symbol: str, iso: str, window: int = WINDOW):
+        """Every action NSE lists for this name with an ex-date near `iso`.
+
+        Walks PR files around the gap rather than trusting its date, because
+        YAHOO MISDATES SPLIT SEAMS. Measured on the sector board's universe:
+        MOTILALOFS (3:1 bonus, ex 2024-06-10), PARAS (1:2 split, ex 2025-07-04)
+        and TRENT (1:2 bonus, ex 2026-06-04) ALL show their discontinuity on
+        1 January - a day the exchange is shut. A date-exact match cannot see
+        any of them, which is why the sector board matches on RATIO.
+        """
+        names = set(self.names_for(symbol))
+        target = dt.date.fromisoformat(iso)
+        out = []
+        for off in range(-window, window + 1):
+            day = target + dt.timedelta(days=off)
+            if day.weekday() >= 5:                 # no PR file on a weekend
+                continue
+            for sym, rows in self.actions_on(day.isoformat()).items():
+                if sym not in names:
+                    continue
+                for ex, pur in rows:
+                    try:
+                        ex_d = dt.date.fromisoformat(ex)
+                    except ValueError:
+                        continue
+                    if abs((ex_d - target).days) <= window and (ex, pur) not in out:
+                        out.append((ex, pur))
+        return out
 
     def save(self):
         self.path.parent.mkdir(exist_ok=True)
@@ -176,6 +221,52 @@ class Repairer:
              "note": "NSE PR corporate actions, keyed by ex-date. {} = asked, "
                      "nothing on that date.",
              "by_day": self.by_day}, separators=(",", ":"), sort_keys=True))
+
+    def _split_seam(self, symbol: str, iso: str, seen: float):
+        """(factor, label) if this gap is Yahoo's split seam, else None.
+
+        YAHOO SPLITS THE SERIES AT NEW YEAR, NOT AT THE EX-DATE. Measured:
+        MOTILALOFS closes 1,240.85 on 2023-12-29 and 315.01 on 2024-01-01, a
+        x0.254 step - while its 4:1 split is dated 2024-06-10. PARAS and TRENT
+        do the same thing in their own years. The split RECORD is accurate; the
+        PRICES are rebased from 1 January of the split's year.
+
+        So three things must agree before a gap is called a split seam:
+          * the ratio reproduces an actual split Yahoo reports for this symbol,
+          * the seam is in the SAME CALENDAR YEAR as that split,
+          * and it is at or before the ex-date.
+        All three are needed. RECLTD fell 25.2% on 2024-06-04 with the election
+        result - a x0.748 step that matches its 4:3 split factor of 0.75 almost
+        exactly - and is left alone only because that split was in 2022.
+        """
+        for when, label, factor in self._splits(symbol):
+            if not factor or factor <= 0:
+                continue
+            if abs(seen - factor) > RATIO_TOL * factor:
+                continue
+            if when[:4] != iso[:4] or iso > when:
+                continue
+            return factor, f"Yahoo split {label} ex {when}"
+        return None
+
+    def _splits(self, symbol: str):
+        if symbol in self._split_cache:
+            return self._split_cache[symbol]
+        out = []
+        try:
+            r = self._session.get(
+                f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}.NS"
+                "?interval=1d&range=10y&events=split", headers=HEADERS, timeout=30)
+            ev = r.json()["chart"]["result"][0].get("events", {}).get("splits", {}) or {}
+            for v in ev.values():
+                num, den = float(v["numerator"]), float(v["denominator"])
+                out.append((dt.date.fromtimestamp(v["date"]).isoformat(),
+                            v.get("splitRatio") or f"{num:g}:{den:g}",
+                            den / num if num else None))
+        except Exception:
+            out = []
+        self._split_cache[symbol] = out
+        return out
 
     def repair(self, symbol: str, dates: list[str], ohlc: dict[str, list]):
         """Return (dates, ohlc) with cliffs removed. Inputs are not mutated.
@@ -200,10 +291,20 @@ class Repairer:
         start = 0                               # truncate point after economics
         factor = [1.0] * n                      # multiplier for bars BEFORE a cut
         for i, iso, seen in cuts:
-            day_actions = self.actions_on(iso)
-            purpose = next((day_actions[nm] for nm in self.names_for(symbol)
-                            if nm in day_actions), None)
-            kind, ratio = classify(purpose) if purpose else (None, None)
+            kind = ratio = purpose = None
+            matched_on = None
+            for ex, pur in self.actions_for(symbol, iso):
+                if ex != iso:
+                    continue
+                k, r = classify(pur)
+                if k is not None:
+                    kind, ratio, purpose, matched_on = k, r, pur, "nse-date"
+                    break
+            if kind is None:
+                hit = self._split_seam(symbol, iso, seen)
+                if hit:
+                    ratio, purpose = hit
+                    kind, matched_on = "SPLIT", "yahoo-split-seam"
             if kind is None:
                 self.unexplained.append((symbol, iso, round((seen - 1) * 100, 1)))
                 continue
@@ -211,13 +312,14 @@ class Repairer:
                 for j in range(i):
                     factor[j] *= ratio
                 self.applied.append({"symbol": symbol, "ex_date": iso, "kind": kind,
-                                     "ratio": round(ratio, 6), "purpose": purpose})
+                                     "ratio": round(ratio, 6), "purpose": purpose,
+                                     "matched_on": matched_on})
             else:
                 # economic, or terms we cannot parse - no ratio is defensible
                 start = max(start, i)
                 self.applied.append({"symbol": symbol, "ex_date": iso,
                                      "kind": kind or "UNPARSED", "ratio": None,
-                                     "purpose": purpose})
+                                     "purpose": purpose, "matched_on": matched_on})
 
         out = {}
         for col, vals in ohlc.items():
