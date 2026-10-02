@@ -84,6 +84,35 @@
   td.l{text-align:left}
   tbody tr:hover{background:var(--panel2)}
   tbody tr.stale{opacity:.45}
+  /* A PnF cell opens the column it came from. pnf-charts and pnf-board are
+     both private with Pages off, so there is nothing to link to - the grid is
+     drawn here, from the same ported state machine that produced the number. */
+  td.pnfcell{cursor:pointer}
+  td.pnfcell:hover{text-decoration:underline;text-underline-offset:3px}
+  #pnfwrap{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.62);
+    display:flex;align-items:center;justify-content:center;padding:18px}
+  #pnfwrap[hidden]{display:none}
+  #pnfbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    box-shadow:0 24px 60px rgba(0,0,0,.6);max-width:min(980px,96vw);
+    max-height:92vh;overflow:auto;padding:14px 16px 12px}
+  #pnfbox h3{margin:0;font-size:14px;display:flex;align-items:baseline;gap:9px}
+  #pnfbox h3 .s{font-size:11px;color:var(--dim);font-weight:400;letter-spacing:.03em}
+  #pnfbox .scales{display:flex;gap:6px;margin:9px 0 4px}
+  #pnfbox .scales button{background:var(--panel2);color:var(--dim);border:1px solid var(--line);
+    border-radius:6px;padding:4px 9px;font:inherit;font-size:11px;cursor:pointer}
+  #pnfbox .scales button.on{color:var(--fg);border-color:var(--accent)}
+  #pnfclose{position:absolute;top:10px;right:12px;background:none;border:0;
+    color:var(--dim);font-size:19px;line-height:1;cursor:pointer}
+  #pnfclose:hover{color:var(--fg)}
+  #pnfbox .foot{color:var(--dim);font-size:11px;margin-top:8px;max-width:62ch;line-height:1.5}
+  .pnfgrid .gl{stroke:var(--line);stroke-width:.5;opacity:.55}
+  .pnfgrid .xx{fill:none;stroke:var(--x);stroke-width:1.7}
+  .pnfgrid .oo{fill:none;stroke:var(--o);stroke-width:1.7}
+  .pnfgrid .last{opacity:1}
+  .pnfgrid .dim{opacity:.55}
+  .pnfgrid text{fill:var(--dim);font-size:9px}
+  .pnfgrid .ema{stroke:var(--accent);stroke-width:1;stroke-dasharray:4 3;opacity:.85}
+  .pnfgrid .emalbl{fill:var(--accent);font-size:9px}
   .sym{font-weight:650}
   .sym a{color:inherit;text-decoration:none}
   .sym a:hover{color:var(--accent)}
@@ -197,6 +226,18 @@
 
 <footer id="foot"></footer>
 
+<div id="pnfwrap" hidden>
+  <div id="pnfbox" style="position:relative">
+    <button id="pnfclose" type="button" aria-label="Close">&times;</button>
+    <h3><span id="pnfsym">—</span><span class="s" id="pnfmeta"></span></h3>
+    <div class="scales" id="pnfscales">
+      <button type="button" data-s="pnf">0.25% &times; 3</button>
+      <button type="button" data-s="pnfm">1% &times; 3</button>
+    </div>
+    <div id="pnfchart"></div>
+    <div class="foot" id="pnffoot"></div>
+  </div>
+</div>
 <script>
 const COLS = [
   {k:'symbol',  t:'Symbol',   type:'s', cls:'l'},
@@ -207,10 +248,10 @@ const COLS = [
   {k:'ema44',   t:'44 EMA',   type:'n'},
   {k:'dist44',  t:'Dist %',   type:'n'},
   {k:'side',    t:'Side',     type:'s'},
-  {k:'pnf',     t:'PnF Col 0.25%', type:'s', ttl:'Reverses on 0.25% x 3 = a 0.75% move, which is inside a normal daily range: median column life is 2 bars and 48% last a single bar. Read it as a 1-2 day flag.'},
-  {k:'pnf_boxes',t:'PnF Boxes 0.25%',type:'n', ttl:'Reverses on 0.25% x 3 = a 0.75% move, which is inside a normal daily range: median column life is 2 bars and 48% last a single bar. Read it as a 1-2 day flag.'},
-  {k:'pnfm',    t:'PnF Col 1%',   type:'s', ttl:'Reverses on 1% x 3 = a 3% move (the pnf-charts medium preset). Same engine, slower scale -- this is the one to read as a leg rather than a wiggle.'},
-  {k:'pnfm_boxes',t:'PnF Boxes 1%',type:'n', ttl:'Reverses on 1% x 3 = a 3% move (the pnf-charts medium preset). Same engine, slower scale -- this is the one to read as a leg rather than a wiggle.'},
+  {k:'pnf',     t:'PnF Col 0.25%', type:'s', ttl:'Reverses on 0.25% x 3 = a 0.75% move, which is inside a normal daily range: median column life is 2 bars and 48% last a single bar. Read it as a 1-2 day flag. CLICK a cell for the chart.'},
+  {k:'pnf_boxes',t:'PnF Boxes 0.25%',type:'n', ttl:'Reverses on 0.25% x 3 = a 0.75% move, which is inside a normal daily range: median column life is 2 bars and 48% last a single bar. Read it as a 1-2 day flag. CLICK a cell for the chart.'},
+  {k:'pnfm',    t:'PnF Col 1%',   type:'s', ttl:'Reverses on 1% x 3 = a 3% move (the pnf-charts medium preset). Same engine, slower scale -- this is the one to read as a leg rather than a wiggle. CLICK a cell for the chart.'},
+  {k:'pnfm_boxes',t:'PnF Boxes 1%',type:'n', ttl:'Reverses on 1% x 3 = a 3% move (the pnf-charts medium preset). Same engine, slower scale -- this is the one to read as a leg rather than a wiggle. CLICK a cell for the chart.'},
   {k:'ema9',    t:'9',        type:'n'},
   {k:'ema14',   t:'14',       type:'n'},
   {k:'ema25',   t:'25',       type:'n'},
@@ -348,10 +389,10 @@ function render(){
     <td>${num(r.ema44)}</td>
     <td class="${r.dist44==null?'':(r.dist44>=0?'above':'below')} ${r.dist44!=null&&Math.abs(r.dist44)<=1?'near':''}">${pct(r.dist44)}</td>
     <td class="${r.side==='Above'?'above':'below'}">${r.side||'—'}</td>
-    <td class="${r.pnf==='X'?'x':'o'}">${r.pnf||'—'}</td>
-    <td class="${r.pnf==='X'?'x':'o'}">${r.pnf_boxes==null?'—':r.pnf_boxes}</td>
-    <td class="${r.pnfm==='X'?'x':'o'}">${r.pnfm||'—'}</td>
-    <td class="${r.pnfm==='X'?'x':'o'}">${r.pnfm_boxes==null?'—':r.pnfm_boxes}</td>
+    <td class="${r.pnf==='X'?'x':'o'} pnfcell" data-sym="${r.symbol}" data-scale="pnf">${r.pnf||'—'}</td>
+    <td class="${r.pnf==='X'?'x':'o'} pnfcell" data-sym="${r.symbol}" data-scale="pnf">${r.pnf_boxes==null?'—':r.pnf_boxes}</td>
+    <td class="${r.pnfm==='X'?'x':'o'} pnfcell" data-sym="${r.symbol}" data-scale="pnfm">${r.pnfm||'—'}</td>
+    <td class="${r.pnfm==='X'?'x':'o'} pnfcell" data-sym="${r.symbol}" data-scale="pnfm">${r.pnfm_boxes==null?'—':r.pnfm_boxes}</td>
     <td>${num(r.ema9)}</td><td>${num(r.ema14)}</td><td>${num(r.ema25)}</td>
     <td>${num(r.ema50)}</td><td>${num(r.ema100)}</td><td>${num(r.ema200)}</td>
     <td>${num(r.high52)}</td><td class="below">${pct(r.d52h)}</td>
@@ -411,6 +452,124 @@ document.addEventListener('click', closePicks);
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePicks(); });
 const escHtml=t=>String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 const escAttr=t=>escHtml(t).replace(/"/g,'&quot;');
+/* ── the PnF chart ───────────────────────────────────────────────────
+   pnf-charts and pnf-board are PRIVATE and have Pages disabled, so there is
+   no address to link a cell to. The grid is therefore drawn here, from the
+   same ported state machine that produced the number in the cell - one
+   engine, so the picture and the column can never disagree.
+
+   data/pnf.json is a SEPARATE file fetched on the first chart opened, not
+   part of levels.json: ~233 KB raw / ~91 KB gzip for both scales across 749
+   names, which is worth paying once on demand and not at all on page load. */
+let PNF=null, pnfLoading=null, pnfSym=null, pnfScale='pnf';
+
+async function pnfData(){
+  if(PNF) return PNF;
+  if(!pnfLoading) pnfLoading = fetch('data/pnf.json?t='+Date.now())
+    .then(r=>r.ok?r.json():null).then(d=>(PNF=d)).catch(()=>null);
+  return pnfLoading;
+}
+
+// [dir_of_first(1=X,0=O), base_box, (bottom-base, height) x N] -> columns
+function unpack(a){
+  if(!a || a.length<4) return null;
+  const out=[], base=a[1]; let d=a[0];
+  for(let i=2;i+1<a.length;i+=2){
+    const bottom=base+a[i], h=a[i+1];
+    out.push({d, bottom, top:bottom+h-1});
+    d = d?0:1;                       // columns strictly alternate
+  }
+  return out;
+}
+
+function drawPnf(){
+  const host=$('pnfchart'), meta=$('pnfmeta'), foot=$('pnffoot');
+  const rec = PNF && PNF.cols && PNF.cols[pnfSym];
+  const cols = rec && unpack(rec[pnfScale]);
+  const ps = PNF && PNF.presets && PNF.presets[pnfScale];
+  $('pnfscales').querySelectorAll('button').forEach(b=>
+    b.classList.toggle('on', b.dataset.s===pnfScale));
+  if(!cols){
+    host.innerHTML='<div style="color:var(--dim);font-size:12px;padding:22px 2px">'
+      + (PNF ? 'No column data published for this name.' : 'Loading…') + '</div>';
+    meta.textContent=''; foot.textContent=''; return;
+  }
+  // price of a box index, rebuilt from (base, pct) - never shipped as a price
+  const pct=ps.box_pct, base=PNF.base||1;
+  const price=i=>base*Math.pow(1+pct/100, i);
+
+  let lo=Infinity, hi=-Infinity;
+  cols.forEach(c=>{ lo=Math.min(lo,c.bottom); hi=Math.max(hi,c.top); });
+  const rows=hi-lo+1, n=cols.length;
+  const cw=Math.max(9, Math.min(17, Math.floor(620/n)));
+  const ch=Math.max(7, Math.min(cw, Math.floor(430/rows)));
+  const padL=6, padR=58, padT=8, padB=16;
+  const W=padL+n*cw+padR, H=padT+rows*ch+padB;
+  const y=i=>padT+(hi-i)*ch;                 // high box at the top
+
+  let g='';
+  for(let i=lo;i<=hi;i++){
+    const yy=y(i)+ch/2;
+    g+=`<line class="gl" x1="${padL}" y1="${yy.toFixed(1)}" x2="${padL+n*cw}" y2="${yy.toFixed(1)}"/>`;
+  }
+  // right-hand price axis, ~8 labels
+  const step=Math.max(1, Math.round(rows/8));
+  for(let i=lo;i<=hi;i+=step){
+    const p=price(i);
+    g+=`<text x="${padL+n*cw+6}" y="${(y(i)+ch/2+3).toFixed(1)}">`
+      + `${p>=1000?Math.round(p).toLocaleString('en-IN'):p.toFixed(p<100?2:1)}</text>`;
+  }
+  cols.forEach((c,ci)=>{
+    const x=padL+ci*cw, m=Math.min(cw,ch)*0.34, cx=x+cw/2;
+    const cls=(c.d? 'xx':'oo') + (ci===n-1?' last':' dim');
+    for(let i=c.bottom;i<=c.top;i++){
+      const cy=y(i)+ch/2;
+      g += c.d
+        ? `<path class="${cls}" d="M${(cx-m).toFixed(1)} ${(cy-m).toFixed(1)}L${(cx+m).toFixed(1)} ${(cy+m).toFixed(1)}M${(cx+m).toFixed(1)} ${(cy-m).toFixed(1)}L${(cx-m).toFixed(1)} ${(cy+m).toFixed(1)}"/>`
+        : `<circle class="${cls}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${m.toFixed(1)}"/>`;
+    }
+  });
+  // the 44 EMA, so the chart answers the question the board is actually about
+  const row=ROWS.find(r=>r.symbol===pnfSym);
+  if(row && row.ema44>0){
+    const b=Math.log(row.ema44/base)/Math.log(1+pct/100);
+    if(b>=lo-1 && b<=hi+1){
+      const yy=padT+(hi-b)*ch+ch/2;
+      g+=`<line class="ema" x1="${padL}" y1="${yy.toFixed(1)}" x2="${padL+n*cw}" y2="${yy.toFixed(1)}"/>`
+       + `<text class="emalbl" x="${padL+2}" y="${(yy-3).toFixed(1)}">44 EMA ${row.ema44}</text>`;
+    }
+  }
+  host.innerHTML=`<svg class="pnfgrid" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img"
+     aria-label="Point and figure chart for ${pnfSym}"><g>${g}</g></svg>`;
+  const last=cols[n-1];
+  meta.textContent=`${pct}% × ${ps.reversal} · last ${n} columns`;
+  foot.innerHTML=`Current column <b class="${last.d?'x':'o'}">${last.d?'X — demand':'O — supply'}`
+    + `</b>, ${last.top-last.bottom+1} boxes, `
+    + `${price(last.bottom).toFixed(2)} to ${price(last.top+1).toFixed(2)}. `
+    + `A box is ${pct}% of price and a reversal needs ${ps.reversal} boxes `
+    + `(${(pct*ps.reversal).toFixed(2)}%), so time does not run evenly across the x axis — `
+    + `each column is a move, not a day.`;
+}
+
+function openPnf(sym, scale){
+  pnfSym=sym; pnfScale=scale||'pnf';
+  $('pnfsym').textContent=sym;
+  $('pnfwrap').hidden=false;
+  drawPnf();
+  pnfData().then(drawPnf);
+}
+function closePnf(){ $('pnfwrap').hidden=true; }
+
+$('tb').addEventListener('click', e=>{
+  const td=e.target.closest('td.pnfcell');
+  if(td) openPnf(td.dataset.sym, td.dataset.scale);
+});
+$('pnfclose').onclick=closePnf;
+$('pnfwrap').addEventListener('click', e=>{ if(e.target===$('pnfwrap')) closePnf(); });
+$('pnfscales').querySelectorAll('button').forEach(b=>
+  b.onclick=()=>{ pnfScale=b.dataset.s; drawPnf(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePnf(); });
+
 ['side','pnf','pnfm'].forEach(id=>$(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
   $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on'));
   b.classList.add('on'); render();

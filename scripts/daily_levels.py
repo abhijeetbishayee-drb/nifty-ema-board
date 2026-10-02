@@ -69,6 +69,15 @@ PNF_REVERSAL = pnf_column.REVERSAL # 3    -- daily 0.25% x 3, same as PnF board
 # exactly the parameterisation the parity test pins.
 PNF_MED_BOX_PCT = 1.0
 PNF_MED_REVERSAL = 3
+
+# How many columns of chart to publish per symbol per scale.
+# The board draws the grid itself rather than linking out, because pnf-charts
+# and pnf-board are both PRIVATE with Pages disabled -- there is no URL to link
+# to. Measured on live data: a 2y 0.25%x3 chart runs to ~250 columns, which is
+# ~1.2 MB raw across 749 symbols; the last 25 is ~118 KB raw / ~51 KB gzip and
+# is about what fits on screen anyway. It goes in its OWN file, fetched only
+# when a chart is first opened, so loading the board itself costs nothing.
+PNF_CHART_COLUMNS = 25
 HISTORY = "2y"
 MIN_BARS_FOR_52W = 200           # ~10 months; below this the 52w range is a lie
 
@@ -143,6 +152,34 @@ def pnf_col(df: pd.DataFrame, symbol: str, pct: float = PNF_BOX_PCT,
         return null
 
 
+def pnf_series(df: pd.DataFrame, pct: float, rev: int,
+               keep: int = PNF_CHART_COLUMNS) -> list[int] | None:
+    """The last `keep` columns, packed flat for the browser.
+
+    [dir_of_first, base_box, then two ints per column: bottom-base, height]
+
+    Directions strictly alternate, so only the first one is carried. Box
+    INDICES, never prices -- the page rebuilds the price axis from (base, pct)
+    with the same geometric formula, so the two sides cannot round differently.
+    """
+    if "High" not in df or "Low" not in df:
+        return None
+    try:
+        cols = pnf_column.columns(
+            df["High"].astype(float).tolist(),
+            df["Low"].astype(float).tolist(), pct, rev)
+    except Exception:
+        return None
+    if not cols:
+        return None
+    cols = cols[-keep:]
+    base = cols[0][1]
+    out = [1 if cols[0][0] == pnf_column.X else 0, base]
+    for _d, bottom, top in cols:
+        out += [bottom - base, top - bottom + 1]
+    return out
+
+
 def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
     if df is None or df.empty or "Close" not in df:
         return None
@@ -187,6 +224,10 @@ def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
     row.update(pnf_col(df, meta["symbol"]))
     row.update(pnf_col(df, meta["symbol"], PNF_MED_BOX_PCT,
                        PNF_MED_REVERSAL, "pnfm"))
+    # carried out of here under a private key and split into its own file by
+    # main(), so levels.json keeps exactly the shape it had
+    row["_cols"] = {"pnf": pnf_series(df, PNF_BOX_PCT, PNF_REVERSAL),
+                    "pnfm": pnf_series(df, PNF_MED_BOX_PCT, PNF_MED_REVERSAL)}
     return row
 
 
@@ -223,8 +264,24 @@ def main() -> int:
         "missing": sorted(missing),
         "rows": rows,
     }
+    charts = {}
+    for r in rows:
+        c = r.pop("_cols", None)
+        if c and (c.get("pnf") or c.get("pnfm")):
+            charts[r["symbol"]] = {k: v for k, v in c.items() if v}
+
     DATA.mkdir(exist_ok=True)
     (DATA / "levels.json").write_text(json.dumps(out, separators=(",", ":")))
+    (DATA / "pnf.json").write_text(json.dumps({
+        "generated_at": out["generated_at"],
+        "base": pnf_column.BASE,
+        "max_columns": PNF_CHART_COLUMNS,
+        "presets": {"pnf": {"box_pct": PNF_BOX_PCT, "reversal": PNF_REVERSAL},
+                    "pnfm": {"box_pct": PNF_MED_BOX_PCT,
+                             "reversal": PNF_MED_REVERSAL}},
+        "format": "[dir_of_first(1=X,0=O), base_box, (bottom-base, height) per column]",
+        "cols": charts,
+    }, separators=(",", ":")))
 
     print(f"OK  built {len(rows)}/{len(symbols)}  missing={len(missing)}")
     if missing:

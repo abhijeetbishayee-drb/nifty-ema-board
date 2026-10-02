@@ -48,20 +48,22 @@ def box_index(price: float, pct: float = BOX_PCT) -> int:
     return math.floor(math.log(price / BASE) / math.log1p(pct / 100.0) + 1e-9)
 
 
-def last_column(highs, lows, pct: float = BOX_PCT,
-                rev: int = REVERSAL) -> tuple[str, int] | None:
-    """('X'|'O', box count) for the final column, or None if unbuildable.
+def columns(highs, lows, pct: float = BOX_PCT,
+            rev: int = REVERSAL) -> list[tuple[int, int, int]]:
+    """Every column as (direction, bottom_box, top_box), oldest first.
 
-    Mirrors PnFChart.from_ohlc's state machine exactly: seed from the first
-    bar's own range (X is the conventional default for a flat bar), extend on a
-    new extreme, reverse only on a `rev`-box move against the column.
+    THE state machine - `last_column` is a view onto this, so the two cannot
+    drift apart. Mirrors PnFChart.from_ohlc exactly: seed from the first bar's
+    own range (X is the conventional default for a flat bar), extend on a new
+    extreme, reverse only on a `rev`-box move against the column.
     """
     bars = [(h, l) for h, l in zip(highs, lows)
             if h is not None and l is not None
             and h == h and l == l and h > 0 and l > 0]
     if not bars:
-        return None
+        return []
 
+    out = []
     direction = top = bottom = None
     for h, l in bars:
         hb, lb = box_index(h, pct), box_index(l, pct)
@@ -75,11 +77,33 @@ def last_column(highs, lows, pct: float = BOX_PCT,
             if hb > top:                        # extend
                 top = hb
             elif lb <= top - rev:               # reverse into O
+                out.append((X, bottom, top))
                 direction, top, bottom = O, top - 1, lb
         else:
             if lb < bottom:                     # extend
                 bottom = lb
             elif hb >= bottom + rev:            # reverse into X
+                out.append((O, bottom, top))
                 direction, top, bottom = X, hb, bottom + 1
 
-    return ("X" if direction == X else "O"), (top - bottom + 1)
+    out.append((direction, bottom, top))
+    return out
+
+
+def last_column(highs, lows, pct: float = BOX_PCT,
+                rev: int = REVERSAL) -> tuple[str, int] | None:
+    """('X'|'O', box count) for the final column, or None if unbuildable."""
+    cols = columns(highs, lows, pct, rev)
+    if not cols:
+        return None
+    d, bottom, top = cols[-1]
+    return ("X" if d == X else "O"), (top - bottom + 1)
+
+
+def price_of(box: int, pct: float = BOX_PCT) -> float:
+    """Lower edge of a box index - the inverse of `box_index`.
+
+    Lets a consumer rebuild the price axis from (base, pct) alone, so the
+    published column data carries box indices and no prices at all.
+    """
+    return BASE * (1.0 + pct / 100.0) ** box
