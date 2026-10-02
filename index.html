@@ -157,6 +157,11 @@
     <label class="count">|dist| ≤
       <input id="maxdist" type="number" step="0.5" min="0" placeholder="%" style="width:62px">
     </label>
+    <label class="count" title="Last session&#39;s close-to-close % change. Signed, so it reads as a range on the number line: max -3 keeps everything that fell 3% or more, min 2 keeps everything that rose 2% or more, -1 to 1 keeps the flat names.">chg %
+      <input id="minchg" type="number" step="0.5" placeholder="min" style="width:58px">
+      –
+      <input id="maxchg" type="number" step="0.5" placeholder="max" style="width:58px">
+    </label>
     <label class="count" title="Boxes in the current PnF column: few = a fresh reversal, many = an extended run">PnF boxes
       <input id="minbox" type="number" step="1" min="1" placeholder="min" style="width:58px">
       –
@@ -276,6 +281,9 @@ function filtered(){
   const pf=$('pnf').querySelector('.on').dataset.v;
   const md=parseFloat($('maxdist').value);
   const bmin=parseInt($('minbox').value,10), bmax=parseInt($('maxbox').value,10);
+  // parseFloat, not parseInt -- and no Math.abs anywhere: chg % is signed, so
+  // "min -3" means "down 3% or worse", not "moved 3% either way".
+  const cmin=parseFloat($('minchg').value), cmax=parseFloat($('maxchg').value);
   return ROWS.filter(r=>{
     if(q && !(r.symbol.toLowerCase().includes(q) ||
              (r.name||'').toLowerCase().includes(q))) return false;
@@ -288,6 +296,8 @@ function filtered(){
     // A null box count must not pass a numeric filter -- it is unknown, not small.
     if(!isNaN(bmin) && (r.pnf_boxes==null || r.pnf_boxes<bmin)) return false;
     if(!isNaN(bmax) && (r.pnf_boxes==null || r.pnf_boxes>bmax)) return false;
+    if(!isNaN(cmin) && (r.chg_pct==null || r.chg_pct<cmin)) return false;
+    if(!isNaN(cmax) && (r.chg_pct==null || r.chg_pct>cmax)) return false;
     return true;
   });
 }
@@ -325,7 +335,7 @@ function render(){
   </tr>`).join('');
 }
 
-['q','maxdist','minbox','maxbox'].forEach(id=>$(id).oninput=render);
+['q','maxdist','minbox','maxbox','minchg','maxchg'].forEach(id=>$(id).oninput=render);
 
 /* ── multi-pick filters ──────────────────────────────────────────────
    Bands and industries were single-value <select>s, so "Midcap150 AND
@@ -386,6 +396,7 @@ $('reset').onclick=()=>{
   ['band','ind'].forEach(id=>{ SEL[id].clear();
     $(id).querySelectorAll('input').forEach(c=>c.checked=false); labelPick(id); });
   $('minbox').value=''; $('maxbox').value='';
+  $('minchg').value=''; $('maxchg').value='';
   ['side','pnf'].forEach(id=>{
     $(id).querySelectorAll('button').forEach((x,n)=>x.classList.toggle('on',n===0));
   });
