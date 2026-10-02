@@ -91,6 +91,7 @@
   .above{color:var(--up)} .below{color:var(--down)}
   .x{color:var(--x);font-weight:700} .o{color:var(--o);font-weight:700}
   .near{background:rgba(240,185,11,.13)}
+  .dt{color:var(--dim);white-space:nowrap}
   .empty{padding:40px;text-align:center;color:var(--dim)}
   footer{padding:7px 14px;color:var(--dim);font-size:11px;
     border-top:1px solid var(--line);background:var(--panel)}
@@ -181,6 +182,8 @@ const COLS = [
   {k:'symbol',  t:'Symbol',   type:'s', cls:'l'},
   {k:'industry',t:'Industry', type:'s', cls:'l'},
   {k:'ltp',     t:'Spot',     type:'n'},
+  {k:'last_date',t:'Date',   type:'s', ttl:'Date of the last completed trading session -- the bar every daily figure on this row is built from'},
+  {k:'chg_pct', t:'Chg %',   type:'n', ttl:'Close-to-close % change on that session. Not today\u2019s move.'},
   {k:'ema44',   t:'44 EMA',   type:'n'},
   {k:'dist44',  t:'Dist %',   type:'n'},
   {k:'side',    t:'Side',     type:'s'},
@@ -201,11 +204,17 @@ let ROWS=[], sortK='dist44', sortAsc=true;
 const $=id=>document.getElementById(id);
 const num=v=>v==null||isNaN(v)?'—':Number(v).toLocaleString('en-IN',
   {minimumFractionDigits:2,maximumFractionDigits:2});
+// ISO in the data (sorts correctly, unambiguous); "01 Oct" on screen, with the
+// full date on hover -- the column repeats the same value on nearly every row,
+// so it has to be narrow.
+const dmy=v=>{ if(!v) return '\u2014';
+  const d=new Date(v+'T00:00:00'); if(isNaN(d)) return v;
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}); };
 const pct=v=>v==null||isNaN(v)?'—':(v>0?'+':'')+v.toFixed(2)+'%';
 
 function header(){
   $('hrow').innerHTML = COLS.map(c=>
-    `<th data-k="${c.k}" class="${c.cls||''}">${c.t}<span class="ar" data-ar="${c.k}"></span></th>`
+    `<th data-k="${c.k}" class="${c.cls||''}"${c.ttl?` title="${c.ttl}"`:''}>${c.t}<span class="ar" data-ar="${c.k}"></span></th>`
   ).join('');
   $('hrow').querySelectorAll('th').forEach(th=>th.onclick=()=>{
     const k=th.dataset.k;
@@ -302,6 +311,8 @@ function render(){
       <span class="nm" title="${(r.name||'').replace(/"/g,'')}">${r.name||''}</span></td>
     <td class="l"><span class="tag">${r.industry||'—'}</span></td>
     <td>${num(r.ltp)}</td>
+    <td class="dt" title="${r.last_date||''}">${dmy(r.last_date)}</td>
+    <td class="${r.chg_pct==null?'':(r.chg_pct>=0?'above':'below')}">${pct(r.chg_pct)}</td>
     <td>${num(r.ema44)}</td>
     <td class="${r.dist44==null?'':(r.dist44>=0?'above':'below')} ${r.dist44!=null&&Math.abs(r.dist44)<=1?'near':''}">${pct(r.dist44)}</td>
     <td class="${r.side==='Above'?'above':'below'}">${r.side||'—'}</td>

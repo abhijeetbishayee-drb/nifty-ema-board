@@ -142,6 +142,13 @@ def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
         "band":     meta["band"],
         "bars":     len(df),
         "prev_close": round(float(close.iloc[-1]), 2),
+        # The last COMPLETED daily bar and its own move -- i.e. the last
+        # working day, not today. Dated explicitly because the board is read
+        # on holidays and before the open, when "latest bar" and "today" are
+        # different days and an undated % change silently misleads.
+        "last_date": str(df.index[-1])[:10],
+        "chg_pct":  (round((float(close.iloc[-1]) / float(close.iloc[-2]) - 1) * 100, 2)
+                     if len(close) >= 2 and float(close.iloc[-2]) else None),
     }
 
     ema_ok = {}
