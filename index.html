@@ -116,6 +116,8 @@
   .pnfgrid .ema{stroke:var(--accent);stroke-width:1;stroke-dasharray:4 3;opacity:.85}
   .pnfgrid .emalbl{fill:var(--accent);font-size:9px}
   .sym{font-weight:650}
+  .adj{color:var(--warn);font-weight:700;margin-left:2px;cursor:help;
+       text-decoration:none;border:0}
   .sym a{color:inherit;text-decoration:none}
   .sym a:hover{color:var(--accent)}
   .nm{color:var(--dim);font-size:11px;max-width:200px;overflow:hidden;
@@ -266,6 +268,8 @@ const COLS = [
   {k:'d52l',    t:'% off L',  type:'n'},
 ];
 let ROWS=[], sortK='dist44', sortAsc=true;
+/* symbol -> what was done to its history, for the * beside the name */
+let ADJUSTED = new Map();
 const $=id=>document.getElementById(id);
 const num=v=>v==null||isNaN(v)?'—':Number(v).toLocaleString('en-IN',
   {minimumFractionDigits:2,maximumFractionDigits:2});
@@ -307,6 +311,8 @@ async function load(){
       d52l: (ltp!=null&&r.low52)?+(((ltp-r.low52)/r.low52)*100).toFixed(2):null};
   });
 
+  ADJUSTED = new Map(((lv.corp_actions||{}).repaired||[]).map(a=>[a.symbol, a]));
+
   fillPick('ind', [...new Set(ROWS.map(r=>r.industry).filter(Boolean))].sort());
 
   // Bands are populated from the data, not hardcoded -- the list was hardcoded
@@ -330,8 +336,27 @@ async function load(){
     `Levels built ${lv.generated_at? new Date(lv.generated_at).toLocaleString('en-IN'):'—'}`+
     ` · ${lv.counts?.built??0}/${lv.counts?.universe??0} names · EMAs & 52w are daily values;`+
     ` Spot, Dist % and Side recompute live · PnF ${lv.pnf?.box_pct}% × ${lv.pnf?.reversal}`+
-    ` (X = demand, O = supply) · auto-refresh 60s`;
+    ` (X = demand, O = supply) · auto-refresh 60s`
+    + (ADJUSTED.size
+        ? ` · * marks a name whose history was repaired for a corporate action`
+          + ` (${[...ADJUSTED.keys()].sort().join(', ')}) — hover the star for which`
+        : '');
   render();
+}
+
+/* A star means THIS NAME'S HISTORY WAS CHANGED, and says how. Two different
+   things get one mark because they have the same consequence for a reader:
+   the numbers beside it are not computed from the prices Yahoo served. The
+   title carries the detail - which action, which ex-date, and whether history
+   was rescaled or cut. */
+function adjStar(sym){
+  const a = ADJUSTED.get(sym);
+  if(!a) return '';
+  const how = a.ratio
+    ? `earlier prices rescaled x${a.ratio}`
+    : 'history starts at the ex-date — earlier bars describe a different company';
+  return `<abbr class="adj" title="${a.kind} ex ${a.ex_date} (${a.purpose||a.kind}), `
+       + `confirmed via ${a.matched_on==='nse-date'?'NSE':'Yahoo split records'} — ${how}">*</abbr>`;
 }
 
 function filtered(){
@@ -382,7 +407,7 @@ function render(){
   $('count').textContent=`${rows.length} of ${ROWS.length}`;
   $('empty').hidden = rows.length>0;
   $('tb').innerHTML = rows.map(r=>`<tr class="${r.stale?'stale':''}">
-    <td class="l"><span class="sym"><a href="https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(r.symbol)}" target="_blank" rel="noopener">${r.symbol}</a></span>
+    <td class="l"><span class="sym"><a href="https://www.nseindia.com/get-quotes/equity?symbol=${encodeURIComponent(r.symbol)}" target="_blank" rel="noopener">${r.symbol}</a>${adjStar(r.symbol)}</span>
       <span class="nm" title="${(r.name||'').replace(/"/g,'')}">${r.name||''}</span></td>
     <td class="l"><span class="tag">${r.industry||'—'}</span></td>
     <td>${num(r.ltp)}</td>
@@ -583,7 +608,7 @@ function drawPnf(){
 
 function openPnf(sym, scale){
   pnfSym=sym; pnfScale=scale||'pnf';
-  $('pnfsym').textContent=sym;
+  $('pnfsym').innerHTML = sym + adjStar(sym);   // the name, not the readings
   $('pnfwrap').hidden=false;
   drawPnf();
   pnfData().then(drawPnf);
