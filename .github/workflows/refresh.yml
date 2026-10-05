@@ -2,10 +2,21 @@ name: refresh spot
 
 # THE 1-MINUTE CADENCE DOES NOT COME FROM `schedule`.
 # GitHub throttles scheduled workflows hard and will not honour a 1-minute
-# cron. The real cadence comes from an external pinger (cron-job.org) calling
-# the workflow_dispatch API every minute -- the same arrangement
-# nifty-heatmap-web already runs. The cron below is only a safety net so the
-# board still moves if the pinger dies.
+# cron. Measured on this repo over the first week of October: a `*/5` cron
+# asking for 288 runs a day delivered 5, at gaps of 4-6 hours. On 2026-10-05
+# the market opened at 09:15 IST and the board did not refresh until 11:23.
+#
+# The cadence therefore comes from workflow_dispatch, which is one of the two
+# events GITHUB_TOKEN is allowed to trigger. Each run re-dispatches the next
+# one (see "Chain the next run"), so once a run starts, the board stays live
+# at roughly one sweep per minute until the close -- with no external pinger
+# and nothing for GitHub to throttle. The cron below only has to land ONCE
+# anywhere in the night to start the day's chain; that it is late does not
+# matter, because the chain, not the cron, sets the cadence.
+#
+# An external pinger (cron-job.org) hitting the dispatch API is still the
+# tightest start, and nifty-heatmap-web runs exactly that. This chain makes
+# the board correct without one.
 on:
   schedule:
     - cron: "*/5 * * * *"
@@ -13,6 +24,7 @@ on:
 
 permissions:
   contents: write
+  actions: write                 # required to dispatch the next run in the chain
 
 concurrency:
   group: refresh-spot
@@ -21,11 +33,37 @@ concurrency:
 jobs:
   spot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12          # covers the longest pre-open idle wait
     steps:
       - uses: actions/checkout@v4
 
+      # One clock decision for the whole run, in IST, so the fetch step and the
+      # chain step can never disagree about what phase of the day it is.
+      #   live  -- inside the session: fetch, commit, chain at once
+      #   warm  -- before the open: no fetch, idle, then chain (bridges a
+      #            throttled overnight cron run to the 09:15 open)
+      #   stop  -- after the close or a weekend: do nothing, break the chain
+      - name: Decide phase
+        id: phase
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          from datetime import datetime, timezone, timedelta
+          IST = timezone(timedelta(hours=5, minutes=30))
+          now = datetime.now(IST)
+          mins = now.hour * 60 + now.minute
+          OPEN, CLOSE = 9 * 60 + 5, 15 * 60 + 45
+          if now.weekday() >= 5:      phase = "stop"
+          elif mins >= CLOSE:         phase = "stop"
+          elif mins >= OPEN:          phase = "live"
+          else:                       phase = "warm"
+          print(f"phase={phase}")
+          print(f"ist={now:%Y-%m-%d %H:%M:%S}")
+          PY
+
+      - run: echo "IST ${{ steps.phase.outputs.ist }} -- phase ${{ steps.phase.outputs.phase }}"
+
       - uses: actions/setup-python@v5
+        if: steps.phase.outputs.phase == 'live'
         with:
           python-version: "3.12"
           cache: pip                 # pandas+numpy+yfinance is ~20s uncached
@@ -35,14 +73,17 @@ jobs:
       # for the plain JSON endpoints (measured fresh=0/500), while yfinance's
       # cookie+crumb session works from the same runners.
       - run: pip install -q -r requirements.txt
+        if: steps.phase.outputs.phase == 'live'
 
       # Exits non-zero only if EVERY symbol failed. A partial sweep keeps the
       # previous price, marks those rows stale, and the page greys them --
       # reporting staleness beats showing an old price as if it were live.
       - name: Fetch spot
+        if: steps.phase.outputs.phase == 'live'
         run: python scripts/refresh_spot.py
 
       - name: Commit
+        if: steps.phase.outputs.phase == 'live'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -50,3 +91,19 @@ jobs:
           git diff --staged --quiet || git commit -m "spot $(date -u +%FT%TZ)"
           git pull --rebase --autostash -q || true
           git push
+
+      # Before the open there is nothing to fetch, but the chain must survive
+      # to 09:05 or the day never starts. Idle cheaply instead of spinning.
+      - name: Idle until closer to the open
+        if: steps.phase.outputs.phase == 'warm'
+        run: sleep 300
+
+      # The cadence itself. `always()` so a failed or partial sweep still hands
+      # on -- one bad fetch must not end the day. Never fires in `stop`, which
+      # is what bounds the loop: it can only run between 00:00 and 15:45 IST on
+      # a weekday, and the close breaks it.
+      - name: Chain the next run
+        if: always() && steps.phase.outputs.phase != 'stop'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run refresh.yml --ref "$GITHUB_REF_NAME"
