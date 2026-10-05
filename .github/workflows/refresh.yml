@@ -27,8 +27,14 @@ permissions:
   actions: write                 # required to dispatch the next run in the chain
 
 concurrency:
+  # QUEUE, DO NOT CANCEL. The chain is serial -- a run dispatches its
+  # successor as its last step -- so a cancel would be killing the fetch that
+  # is already nearly done. Queueing also bounds the loop for free: the group
+  # holds one running plus one pending run, and any further dispatch (a cron
+  # landing mid-session, a manual click) cancels the PENDING one, so duplicate
+  # chains collapse back to a single chain on their own.
   group: refresh-spot
-  cancel-in-progress: true       # a superseded price fetch has no value
+  cancel-in-progress: false
 
 jobs:
   spot:
@@ -98,12 +104,14 @@ jobs:
         if: steps.phase.outputs.phase == 'warm'
         run: sleep 300
 
-      # The cadence itself. `always()` so a failed or partial sweep still hands
-      # on -- one bad fetch must not end the day. Never fires in `stop`, which
-      # is what bounds the loop: it can only run between 00:00 and 15:45 IST on
-      # a weekday, and the close breaks it.
+      # The cadence itself. `!cancelled()` rather than `success()`, so a failed
+      # or partial sweep still hands on -- one bad fetch must not end the day --
+      # but a run cancelled while pending does not, which is what keeps a
+      # collapsed duplicate chain from being resurrected. Never fires in
+      # `stop`: the loop can only live between 00:00 and 15:45 IST on a
+      # weekday, and the close breaks it.
       - name: Chain the next run
-        if: always() && steps.phase.outputs.phase != 'stop'
+        if: ${{ !cancelled() && steps.phase.outputs.phase != 'stop' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh workflow run refresh.yml --ref "$GITHUB_REF_NAME"
