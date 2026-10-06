@@ -104,6 +104,49 @@ To wire it up: create a cron-job.org job hitting
 `POST https://api.github.com/repos/abhijeetbishayee-drb/nifty-ema-board/actions/workflows/refresh.yml/dispatches`
 with `{"ref":"main"}` and a fine-grained PAT with Actions: write.
 
+### The DAILY build needs the same treatment, for a different reason
+
+`daily.yml` only asks for one run a day, so `schedule` does fire it -- but it
+fires it LATE and at an unpredictable hour. On 2026-10-05 the cron asked for
+10:15 UTC and GitHub ran it at **19:18 UTC, nine hours adrift**. That matters
+because Yahoo posts NSE daily bars per-symbol over many hours: the 19:18 run
+found no 2026-10-05 bars at all and committed a board still dated 10-01, and
+by 09:30 the next morning only 414 of 747 names had caught up. The run
+succeeded; the data did not move.
+
+Second job, same shape as the one above:
+
+| field | value |
+|---|---|
+| URL | `https://api.github.com/repos/abhijeetbishayee-drb/nifty-ema-board/actions/workflows/daily.yml/dispatches` |
+| Method | `POST` |
+| Body | `{"ref":"main"}` |
+| Schedule | minute **30**, hours **8** and **20**, every day, timezone **Asia/Kolkata** |
+
+Headers:
+
+    Accept: application/vnd.github+json
+    Authorization: Bearer <PAT>
+    X-GitHub-Api-Version: 2022-11-28
+    Content-Type: application/json
+
+A success is **HTTP 204 with an empty body** -- not 200, and cron-job.org will
+show it as an empty response. The PAT is the same fine-grained token the
+1-minute job uses (repo `nifty-ema-board`, **Actions: Read and write**); no
+extra scope is needed.
+
+Why 08:30 and 20:30, and why running on weekends is harmless:
+
+* **20:30 IST** is five hours after the close -- the primary build.
+* **08:30 IST** the next morning is the catch-up for the names Yahoo had not
+  posted yet, and it is safely before the open. It does not need to be: since
+  2026-10-06 `build_row` takes a cutoff from `complete_through()` and ignores
+  any bar for a session that has not finished, so a dispatch at ANY hour is
+  safe. Before that fix a mid-session run would have reported the forming
+  candle as a completed session.
+* A dispatch on a holiday or a weekend rebuilds identical data, and the commit
+  step is `git diff --staged --quiet || git commit` -- so it pushes nothing.
+
 **Honest limit, measured on this repo:**
 
 | stage | time |
