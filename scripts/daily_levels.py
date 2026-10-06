@@ -181,10 +181,34 @@ def pnf_series(df: pd.DataFrame, pct: float, rev: int,
     return out
 
 
-def build_row(sym: str, meta: dict, df: pd.DataFrame) -> dict | None:
+def complete_through() -> "pd.Timestamp":
+    """Newest session date that is actually FINISHED, in IST.
+
+    yfinance returns the FORMING candle during market hours, so a build run at
+    09:30 IST would report today as the last completed session and compute
+    chg_pct, the EMAs and the PnF column off a part-day bar. This is the same
+    trap that made the live scanner's Gate 4 score bars with ~1% of normal
+    volume, so it is cut off at the source here rather than trusted to the
+    schedule: the daily job is workflow_dispatch-able and its cron has already
+    drifted by nine hours once (2026-10-05 fired 19:18 UTC, not 10:15 UTC).
+
+    15:45 IST, after the closing auction settles -- Cat I continuous trading
+    ends 15:15 and derivatives 15:40 under the 2026-08-03 structure.
+    """
+    now = datetime.now(IST)
+    today = pd.Timestamp(now.date())
+    return today if (now.hour, now.minute) >= (15, 45) else today - pd.Timedelta(days=1)
+
+
+def build_row(sym: str, meta: dict, df: pd.DataFrame,
+              cutoff: "pd.Timestamp | None" = None) -> dict | None:
     if df is None or df.empty or "Close" not in df:
         return None
     df = df.dropna(subset=["Close"])
+    if cutoff is not None and len(df):
+        # tz-naive compare; yfinance daily indexes are midnight-stamped dates
+        idx = pd.DatetimeIndex(df.index).tz_localize(None)
+        df = df[idx <= cutoff]
     if len(df) < 60:
         return None
 
@@ -249,11 +273,13 @@ def main() -> int:
     # from the size of the gap - see scripts/corp_actions.py.
     fixer = corp_actions.Repairer()
 
+    cutoff = complete_through()
+    print(f"treating sessions up to {cutoff.date()} as complete", flush=True)
     rows, missing = [], []
     for sym in symbols:
         df = frames.get(sym) if isinstance(frames, dict) else None
         df = fixer.repair_df(sym, df)
-        r = build_row(sym, by_sym[sym], df)
+        r = build_row(sym, by_sym[sym], df, cutoff)
         if r is None:
             missing.append(sym)
         else:
@@ -262,6 +288,7 @@ def main() -> int:
     out = {
         "generated_at": datetime.now(IST).isoformat(),
         "history": HISTORY,
+        "complete_through": str(cutoff.date()),
         "ema_spans": EMA_SPANS,
         "pnf": {"available": PNF_AVAILABLE, "box_pct": PNF_BOX_PCT,
                 "reversal": PNF_REVERSAL,

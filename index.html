@@ -327,13 +327,31 @@ async function load(){
                   return (x<0?99:x)-(y<0?99:y)||String(a).localeCompare(b);});
   fillPick('band', bands);
 
+  /* The freshness dot above covers ONLY the 1-minute spot. The daily half --
+     Date, Chg %, every EMA, 52w, both PnF columns -- comes from a separate job,
+     and when that job froze on 2026-10-01 while spot kept ticking the header
+     still read "747/750 fresh" and looked healthy. So the daily side gets its
+     own line, including how many names actually reached the newest session:
+     Yahoo's NSE daily bars arrive per-symbol, not all at once. */
+  function dailyMeta(lv){
+    const ds = ROWS.map(r=>r.last_date).filter(Boolean);
+    if(!ds.length) return '';
+    const newest = ds.reduce((a,b)=>a>b?a:b);
+    const at = ds.filter(d=>d===newest).length;
+    const behind = ds.length - at;
+    const want = lv.complete_through;
+    const cls = (want && newest < want) ? 'bad' : (behind ? 'warn' : '');
+    return `<br><span class="dot ${cls}"></span>daily ${dmy(newest)}`
+         + (behind ? ` · ${at}/${ds.length} at that date` : ` · all ${at}`);
+  }
+
   const fresh=sp.counts?.fresh??0, tot=sp.counts?.universe??ROWS.length;
   const bad = tot? (tot-fresh)/tot : 1;
   const cls = bad>0.5?'bad':(bad>0.05?'warn':'');
   $('meta').innerHTML=
     `<span class="dot ${cls}"></span>spot ${new Date(sp.generated_at||Date.now())
       .toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`+
-    ` · ${fresh}/${tot} fresh · ${sp.fetch_path||'—'}`;
+    ` · ${fresh}/${tot} fresh · ${sp.fetch_path||'—'}`+ dailyMeta(lv);
   $('foot').textContent =
     `Levels built ${lv.generated_at? new Date(lv.generated_at).toLocaleString('en-IN'):'—'}`+
     ` · ${lv.counts?.built??0}/${lv.counts?.universe??0} names · EMAs & 52w are daily values;`+
