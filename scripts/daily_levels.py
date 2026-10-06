@@ -48,6 +48,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 # taxonomy would not be.
 import pnf_column                            # noqa: E402
 import corp_actions                          # noqa: E402
+import bhavcopy                             # noqa: E402
 import yfinance as yf                        # noqa: E402
 
 PNF_AVAILABLE = True
@@ -275,10 +276,20 @@ def main() -> int:
 
     cutoff = complete_through()
     print(f"treating sessions up to {cutoff.date()} as complete", flush=True)
+
+    # FILL YAHOO'S HOLES FROM NSE'S OWN PRINT. Yahoo's NSE daily series drops
+    # whole sessions for some names while carrying later ones -- KOTAKBANK ran
+    # 2026-10-01 -> 2026-10-06 with 10-05 simply absent, 333 of 747 names
+    # affected -- so this is repair, not patience. See scripts/bhavcopy.py.
+    filler = bhavcopy.Filler(cutoff)
+    print(f"bhavcopy: {len(filler.sessions)} trading session(s) cached "
+          f"({', '.join(str(d.date()) for d in filler.session_dates)})", flush=True)
+
     rows, missing = [], []
     for sym in symbols:
         df = frames.get(sym) if isinstance(frames, dict) else None
         df = fixer.repair_df(sym, df)
+        df = filler.fill_df(sym, df)
         r = build_row(sym, by_sym[sym], df, cutoff)
         if r is None:
             missing.append(sym)
@@ -297,6 +308,10 @@ def main() -> int:
                 "legend": {"X": "demand", "O": "supply"}},
         "counts": {"universe": len(symbols), "built": len(rows),
                    "missing": len(missing)},
+        "bhavcopy_filled": {"names": len(filler.filled),
+                            "phantoms_dropped": sum(len(v) for v in filler.phantoms.values()),
+                            "bars": sum(len(v) for v in filler.filled.values()),
+                            "sessions": [str(d.date()) for d in filler.session_dates]},
         "corp_actions": {"repaired": fixer.applied,
                          "unexplained": [{"symbol": s_, "date": d_, "pct": p_}
                                          for s_, d_, p_ in fixer.unexplained]},
