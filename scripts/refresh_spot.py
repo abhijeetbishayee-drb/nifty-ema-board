@@ -73,6 +73,74 @@ def fetch_spot(symbols: list[str]) -> dict[str, float]:
     return out
 
 
+BREADTH = DATA / "breadth_today.json"
+OPEN_MIN, CLOSE_MIN = 9 * 60 + 15, 15 * 60 + 30
+
+
+def record_breadth(rows, now):
+    """Keep an intraday advance/decline series for the whole 750-name band.
+
+    Breadth over ranks 1-750 (NIFTY Total Market) is a far better read on the
+    market than breadth over the 235 F&O names, which is where the sector
+    board's floating tracker started: a 235-name count is dominated by large
+    caps and misses the small- and micro-cap half entirely, which is usually
+    where a day's real participation shows. This sweep already holds every
+    price, so the count is one pass over rows that are in memory, not a fetch.
+
+    Measured against prev_close from levels.json, the previous session's close
+    -- the same basis the board's own chg% column uses, so the tracker and the
+    table can never disagree about whether a name is up.
+
+    A STALE row is excluded rather than counted flat. A name whose price could
+    not be refreshed has an unknown direction, and counting it as unchanged
+    would quietly shrink both sides toward the middle.
+
+    Today only, one point a minute, nothing outside 09:15-15:30 IST, and a
+    second run inside the same minute replaces that minute rather than adding
+    a second point -- see the sector board's tracker for why each of those
+    matters.
+    """
+    try:
+        levels = json.loads((DATA / "levels.json").read_text())
+        prev = {r["symbol"]: r.get("prev_close") for r in levels.get("rows", [])}
+    except (OSError, ValueError):
+        return None                     # no basis to compare against; skip quietly
+
+    adv = dec = 0
+    for r in rows:
+        if r.get("stale") or r.get("ltp") is None:
+            continue
+        pc = prev.get(r["symbol"])
+        if not pc:
+            continue
+        if r["ltp"] > pc:
+            adv += 1
+        elif r["ltp"] < pc:
+            dec += 1
+
+    mins = now.hour * 60 + now.minute
+    today = now.strftime("%Y-%m-%d")
+    doc = {"date": today, "total": 0, "points": []}
+    if BREADTH.exists():
+        try:
+            prevdoc = json.loads(BREADTH.read_text())
+            if prevdoc.get("date") == today:
+                doc = prevdoc
+        except (OSError, ValueError):
+            pass
+
+    if OPEN_MIN <= mins <= CLOSE_MIN:
+        pts = doc["points"]
+        if pts and pts[-1][0] == mins:
+            pts[-1] = [mins, adv, dec]
+        else:
+            pts.append([mins, adv, dec])
+        doc["total"] = adv + dec
+
+    BREADTH.write_text(json.dumps(doc, separators=(",", ":")))
+    return doc
+
+
 def main() -> int:
     uni = json.loads((DATA / "universe.json").read_text())
     symbols = sorted(s["symbol"] for s in uni["stocks"])
@@ -121,7 +189,10 @@ def main() -> int:
     }
     DATA.mkdir(exist_ok=True)
     spot_path.write_text(json.dumps(out, separators=(",", ":")))
-    print(f"OK  fresh={len(symbols) - stale}/{len(symbols)}  stale={stale}  {elapsed}s")
+    b = record_breadth(rows, now)
+    bmsg = (f"  breadth {b['points'][-1][1]}/{b['points'][-1][2]}"
+            f" ({len(b['points'])} pts)") if b and b["points"] else ""
+    print(f"OK  fresh={len(symbols) - stale}/{len(symbols)}  stale={stale}  {elapsed}s{bmsg}")
     # A totally dead sweep is a failure; a partial one is reported, not fatal.
     return 0 if stale < len(symbols) else 5
 
