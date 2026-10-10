@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-10T08:00:41.032626+05:30",
+  "generated_at": "2026-10-10T20:00:44.897678+05:30",
   "definition": "NSE ranks 1-750 by full market cap = NIFTY 100 UNION NIFTY Midcap 150 UNION NIFTY Smallcap 250 UNION NIFTY Microcap 250 (== NIFTY Total Market)",
   "partition_verified": true,
   "counts": {
@@ -8,15 +8,14 @@
     "smallcap250": 251,
     "microcap250": 254,
     "raw_band": 755,
-    "dummy_excluded": 5,
-    "tradeable_total": 750
+    "dummy_excluded": 4,
+    "tradeable_total": 751
   },
   "dummy_excluded": [
     "DUMMYHEG",
     "DUMMYINGL1",
     "DUMMYINGL2",
-    "DUMMYINXGN",
-    "DUMMYTRVN"
+    "DUMMYINXGN"
   ],
   "stocks": [
     {
@@ -4862,6 +4861,13 @@
       "name": "Triveni Turbine Ltd.",
       "industry": "Capital Goods",
       "band": "Smallcap250"
+    },
+    {
+      "symbol": "TRIVENIPT",
+      "yahoo": "TRIVENIPT.NS",
+      "name": "Triveni Power Transmission Ltd.",
+      "industry": "Capital Goods",
+      "band": "Microcap250"
     },
     {
       "symbol": "TTKPRESTIG",
